@@ -46,9 +46,6 @@ class Agent(object):
             print observation
 
     def diffGoal(self, goal):
-        f = open('t','a')
-        f.write(str('GOTHERE\n'))
-        f.close()
         if(self.id == 0):
             if(self.goal1 == goal or self.goal2 == goal):
                 return False
@@ -78,9 +75,6 @@ class Agent(object):
         obs = self.observation      
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
-        f = open('t','a')
-        f.write(str('a'))
-        f.close()
         if cps1[2] != self.team and self.diffGoal(self.cps1loc) == True:
                 self.goal = self.cps1loc
                 self.setGoal(self.cps1loc)
@@ -110,7 +104,9 @@ class Agent(object):
             turn = angle_fix(math.atan2(dy, dx) - obs.angle)
             if turn > self.settings.max_turn or turn < -self.settings.max_turn:
                 shoot = False
-            speed = (dx**2 + dy**2)**0.5
+                speed = 0.5*(dx**2 + dy**2)**0.5
+            else:
+                speed = (dx**2 + dy**2)**0.5
         else:
             turn = 0
             speed = 0
