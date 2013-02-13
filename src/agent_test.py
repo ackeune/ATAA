@@ -7,6 +7,26 @@ class Agent(object):
     cps2loc = (248, 216)
     ammo1loc = (9.5*16, 8*16)
     ammo2loc = (19.5*16, 8*16)
+
+    LEFTSPAWN = 0
+    RIGHTSPAWN = 1
+    BOTCAPZONE = 2
+    TOPCAPZONE = 3
+    LEFTAMMOZONE = 4
+    RIGHTAMMOZONE = 5
+    BATTLEFIELD = 6
+    PINKLEFTZONE = 7
+    PINKRIGHTZONE = 8
+    PURPLELEFTZONE = 9
+    PURPLERIGHTZONE = 10
+    ORANGELEFTZONE = 11
+    ORANGERIGHTZONE = 12
+    GRAYLEFTZONE = 13
+    GRAYRIGHTZONE = 14
+
+    AMMO1 = True
+    AMMO2 = True
+    
     NAME = "default_agent"
     
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, **kwargs):
@@ -22,6 +42,11 @@ class Agent(object):
         self.settings = settings
         self.goal = None
         self.callsign = '%s-%d'% (('BLU' if team == TEAM_BLUE else 'RED'), id)
+
+        f = open('test.txt','a')
+        f.write(str(blob))
+        f.close()
+        
         # Read the binary blob, we're not using it though
         if blob is not None:
             print "Agent %s received binary blob of %s" % (
@@ -57,7 +82,39 @@ class Agent(object):
                 return False
         return True
         
-
+    def locToZone(self, loc):
+        if loc[0] <= 4*16 and loc[1] >= 6*16 and loc[1] <= 11*16: #left spawn
+            return self.LEFTSPAWN
+        elif loc[0] > 25*16 and loc[1] >= 6*16 and loc[1] <= 11*16: #right spawn
+            return self.RIGHTSPAWN
+        elif loc[0] >= 7*16 and loc[0] <= 18*16 and loc[1] >= 12*16: #bot cap zone
+            return self.BOTCAPZONE
+        elif loc[0] >= 11*16 and loc[0] <= 22*16 and loc[1] <= 5*16: #top cap zone
+            return self.TOPCAPZONE
+        elif (loc[0] >= 4*16 and loc[0] <= 7*16 and loc[1] >= 9*16 and loc[1] <= 11*16) or (loc[0] >= 7*16 and loc[0] <= 11*16 and loc[1] >= 5*16 and loc[1] <= 11*16) : #left ammo zone
+            return self.LEFTAMMOZONE
+        elif (loc[0] >= 22*16 and loc[0] <= 25*16 and loc[1] >= 8*16 and loc[1] <= 6*16) or (loc[0] >= 18*16 and loc[0] <= 22*16 and loc[1] >= 6*16 and loc[1] <= 12*16) : #right ammo zone
+            return self.RIGHTAMMOZONE
+        elif loc[0] >= 11*16 and loc[0] <= 18*16 and loc[1] >= 6*16 and loc[1] <= 11*16: #battlefield zone
+            return self.BATTLEFIELD
+        elif loc[0] >= 4*16 and loc[0] <= 7*16 and loc[1] >= 5*16 and loc[1] <= 9*16: #pink left zone
+            return self.PINKLEFTZONE
+        elif loc[0] >= 22*16 and loc[0] <= 25*16 and loc[1] >= 8*16 and loc[1] <= 12*16: #pink right zone
+            return self.PINKRIGHTZONE
+        elif loc[0] <= 7*16 and loc[1] >= 11*16: #purple left zone
+            return self.PURPLELEFTZONE
+        elif loc[0] >= 22*16 and loc[1] <= 6*16: #purple right zone
+            return self.PURPLERIGHTZONE
+        elif loc[0] >= 7*16 and loc[0] <= 11*16 and loc[1] <= 5*16: #Orange left zone
+            return self.ORANGELEFTZONE
+        elif loc[0] >= 18*16 and loc[0] <= 22*16 and loc[1] >= 12*16: #Orange right zone
+            return self.ORANGERIGHTZONE
+        elif (loc[0] <= 7*16 and loc[1] <= 5*16) or (loc[0] <= 4*16 and loc[1] <= 6*16 and loc[1] >= 5*16): #Gray left zone
+            return self.GRAYLEFTZONE
+        elif (loc[0] >= 22*16 and loc[1] >= 12*16) or (loc[0] >= 25*16 and loc[1] <= 12*16 and loc[1] >= 11*16): #Gray right zone
+            return self.GRAYRIGHTZONE
+        else:
+            return -1
     
     def setGoal(self, goal):
         if(self.id == 0):
@@ -72,21 +129,33 @@ class Agent(object):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
-        obs = self.observation      
+        obs = self.observation
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
-        if cps1[2] != self.team and self.diffGoal(self.cps1loc) == True:
-                self.goal = self.cps1loc
-                self.setGoal(self.cps1loc)
-        elif cps2[2] != self.team and self.diffGoal(self.cps2loc):
-                self.goal = self.cps2loc
-                self.setGoal(self.cps2loc)
-        elif self.diffGoal(self.ammo1loc):
-            self.goal = self.ammo1loc
-            self.setGoal(self.ammo1loc)
-        elif self.diffGoal(self.ammo2loc):
-            self.goal = self.ammo2loc
-            self.setGoal(self.ammo2loc)
+        ammo = False
+        if(obs.ammo > 0):
+            ammo = True
+        foes = False
+        if(len(obs.foes) > 0):
+            foes = True
+        state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, AMMO1, AMMO2, foes)
+        
+        if obs.respawn_in == -1:
+            if cps1[2] != self.team and self.diffGoal(self.cps1loc) == True:
+                    self.goal = self.cps1loc
+                    self.setGoal(self.cps1loc)
+            elif cps2[2] != self.team and self.diffGoal(self.cps2loc):
+                    self.goal = self.cps2loc
+                    self.setGoal(self.cps2loc)
+            elif self.diffGoal(self.ammo1loc):
+                self.goal = self.ammo1loc
+                self.setGoal(self.ammo1loc)
+            elif self.diffGoal(self.ammo2loc):
+                self.goal = self.ammo2loc
+                self.setGoal(self.ammo2loc)
+        else:
+            self.setGoal((200, 200))
+            self.goal = (200, 200)
         # Shoot enemies
         shoot = False
         if (obs.ammo > 0 and 
