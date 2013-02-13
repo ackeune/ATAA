@@ -137,8 +137,27 @@ class Agent(object):
             reward += 10
         if obs.respawn_in == 9:
             if laststate[3] > 0:
-                reward += -17
+                reward += -7
             reward += -10
+        if (laststate[1] != self.team and state[1] == self.team):
+            reward+=5
+        if (laststate[2] != self.team and state[2] == self.team):
+            reward+=5
+        if (laststate[1] == self.team and state[1] != self.team):
+            reward-=5
+        if (laststate[2] == self.team and state[2] != self.team):
+            reward-=5
+        if ((state == 2 and laststate == 2 )or(state == 3 and laststate == 3)):
+            reward+=2
+            if obs.ammo > 0 :
+                reward+=9
+        if(laststate[3]< state[3] ):
+            reward +=3
+            if laststate[3] ==0:
+                reward+=3         
+        return reward
+        
+        
         
         
     
