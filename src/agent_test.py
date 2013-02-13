@@ -1,5 +1,10 @@
+from random import randrange
 
 class Agent(object):
+
+    blobdict = {}
+    lastaction = -1
+    laststate = ()
     goal0 = (0,0)
     goal1 = (0,0)
     goal2 = (0,0)
@@ -43,17 +48,14 @@ class Agent(object):
         self.goal = None
         self.callsign = '%s-%d'% (('BLU' if team == TEAM_BLUE else 'RED'), id)
 
-        f = open('test.txt','a')
-        f.write(str(blob))
-        f.close()
-        
         # Read the binary blob, we're not using it though
         if blob is not None:
             print "Agent %s received binary blob of %s" % (
                self.callsign, type(pickle.loads(blob.read())))
             # Reset the file so other agents can read it.
             blob.seek(0) 
-        
+            Agent.blobdict = pickle.loads(blob.read())
+            blob.seek(0)
         # Recommended way to share variables between agents.
         if id == 0:
             self.all_agents = self.__class__.all_agents = []
@@ -93,7 +95,7 @@ class Agent(object):
             return self.TOPCAPZONE
         elif (loc[0] >= 4*16 and loc[0] <= 7*16 and loc[1] >= 9*16 and loc[1] <= 11*16) or (loc[0] >= 7*16 and loc[0] <= 11*16 and loc[1] >= 5*16 and loc[1] <= 11*16) : #left ammo zone
             return self.LEFTAMMOZONE
-        elif (loc[0] >= 22*16 and loc[0] <= 25*16 and loc[1] >= 8*16 and loc[1] <= 6*16) or (loc[0] >= 18*16 and loc[0] <= 22*16 and loc[1] >= 6*16 and loc[1] <= 12*16) : #right ammo zone
+        elif (loc[0] >= 22*16 and loc[0] <= 25*16 and loc[1] >= 6*16 and loc[1] <= 8*16) or (loc[0] >= 18*16 and loc[0] <= 22*16 and loc[1] >= 6*16 and loc[1] <= 12*16) : #right ammo zone
             return self.RIGHTAMMOZONE
         elif loc[0] >= 11*16 and loc[0] <= 18*16 and loc[1] >= 6*16 and loc[1] <= 11*16: #battlefield zone
             return self.BATTLEFIELD
@@ -114,6 +116,9 @@ class Agent(object):
         elif (loc[0] >= 22*16 and loc[1] >= 12*16) or (loc[0] >= 25*16 and loc[1] <= 12*16 and loc[1] >= 11*16): #Gray right zone
             return self.GRAYRIGHTZONE
         else:
+            f2 = open('fail.txt','a')
+            f2.write(str(loc))
+            f2.close()
             return -1
     
     def setGoal(self, goal):
@@ -124,7 +129,19 @@ class Agent(object):
         elif(self.id == 2):
             Agent.goal2 = goal
         return
-          
+
+
+    def getReward(self, laststate, state, obs):
+        reward = 0
+        if obs.hit != None:
+            reward += 10
+        if obs.respawn_in == 9:
+            if laststate[3] > 0:
+                reward += -17
+            reward += -10
+        
+        
+    
     def action(self):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
@@ -132,13 +149,24 @@ class Agent(object):
         obs = self.observation
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
+        action = -1
         ammo = False
         if(obs.ammo > 0):
             ammo = True
         foes = False
         if(len(obs.foes) > 0):
             foes = True
-        state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, AMMO1, AMMO2, foes)
+        state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
+        reward = self.getReward(self.laststate, state, obs)
+        if not str(state) in self.blobdict:
+            #[cap nearest, get ammo, hunt] camp points/control zone
+            Agent.blobdict[str(state)] = '[10, 10, 10]'
+            action = randrange(0,2)
+        else:
+            values = eval(self.blobdict[str(state)])
+            action = max( (v, i) for i, v in enumerate(values) )[1]
+        self.lastaction = action
+
         
         if obs.respawn_in == -1:
             if cps1[2] != self.team and self.diffGoal(self.cps1loc) == True:
@@ -156,6 +184,7 @@ class Agent(object):
         else:
             self.setGoal((200, 200))
             self.goal = (200, 200)
+            
         # Shoot enemies
         shoot = False
         if (obs.ammo > 0 and 
@@ -205,5 +234,6 @@ class Agent(object):
             interrupt (CTRL+C) by the user. Use it to
             store any learned variables and write logs/reports.
         """
+        pickle.dump(self.blobdict, open('../src/agent_test_blob', 'wb'))
         pass
         
