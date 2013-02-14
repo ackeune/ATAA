@@ -147,7 +147,7 @@ class Agent(object):
             reward-=5
         if (laststate[2] == self.team and state[2] != self.team):
             reward-=5
-        if ((state == 2 and laststate == 2 )or(state == 3 and laststate == 3)):
+        if ((state[0] == 2 and laststate[0] == 2 )or(state[0] == 3 and laststate[0] == 3)):
             reward+=2
             if obs.ammo > 0 :
                 reward+=9
