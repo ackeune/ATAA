@@ -157,7 +157,7 @@ class Agent(object):
         if(laststate[3]< state[3] ):
             reward +=3
             if laststate[3] ==0:
-                reward+=3         
+                reward+=10         
         return reward
         
         
