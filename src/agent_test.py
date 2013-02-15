@@ -189,28 +189,11 @@ class Agent(object):
         #f.write('doingit' + str(self.goal) + '\n')
         #f.close()
         return shoot
-        
-    
-    def action(self):
-        """ This function is called every step and should
-            return a tuple in the form: (turn, speed, shoot)
-        """
-        self.goal = None
-        obs = self.observation
-        cps1 = obs.cps[0]
-        cps2 = obs.cps[1]
-        action = -1
-        shoot = False
-        ammo = False
-        if(obs.ammo > 0):
-            ammo = True
-        foes = False
-        if(len(obs.foes) > 0):
-            foes = True
-        state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
-        #f = open('testfile.txt','a')
-        #f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
-        #f.write('Observation: ' + str(obs) + '\n')
+
+    def planAction(self, state):
+        #f = open('planaction.txt','a')
+        #f.write('doingit' + str(state) + '\n')
+        #f.close()
         if str(state) in self.blobdict:
             values = self.blobdict[str(state)]
             maxVals = []
@@ -225,29 +208,122 @@ class Agent(object):
                 elif(values[i] == maxVal):
                     maxVals.append(i)
             action = random.choice(maxVals)
-            #f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '\n')
+            value = maxVal
+            #f = open('planaction.txt','a')
+            #f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '|' + str(value) + '\n')
+            #f.close()
         else: 
             #[cap nearest, get ammo] hunt/camp points/control zone
             values = [self.Qinit, self.Qinit, self.Qinit, self.Qinit]
             Agent.blobdict[str(state)] = values
-            action = random.choice(maxVals)
+            action = random.choice(values)
+            value = self.Qinit
             #f.write('notinblobyet' + '\n')
-            
-        if(self.lastaction > -1):
-            reward = self.getReward(self.laststate, state, obs)
-            oldvalues = self.blobdict[str(self.laststate)]
-            toadd = self.alpha*(reward + self.gamma*values[action] - oldvalues[self.lastaction])
-            newvalues = oldvalues
-            newvalues[self.lastaction] += toadd
-            Agent.blobdict[str(self.laststate)] = newvalues
-            #f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
+        return (action, value)
+
+    def updateBlob(self, laststate, lastaction, state, actionvalue, reward):
+        oldvalues = self.blobdict[str(laststate)]
+        toadd = self.alpha*(reward + self.gamma*actionvalue - oldvalues[lastaction])
+        newvalues = oldvalues
+        newvalues[lastaction] += toadd
+        Agent.blobdict[str(laststate)] = newvalues
+        #f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
+
+    def inVisionRange(self, loc, obj):
+        diffx = abs(loc[0]-obj[0])
+        diffy = abs(loc[1]-obj[1])
+        if(diffx+diffy <= self.settings.max_see):
+            return True
+        else:
+            return False
+
+    def goalReached(self, goal, obs):
+        #f = open('goalreached.txt','a')
+        #f.write('reached?:' + str(goal) + 'obs: ' + str(obs.loc) +'  ')
+        #f.close()
+        if(goal == self.cps1loc):
+            if(obs.cps[0][2] == self.team):
+                return True
+            else:
+                return False            
+        elif(goal == self.cps2loc):
+            if(obs.cps[1][2] == self.team):
+                return True
+            else:
+                return False              
+        elif(goal == self.ammo1loc):
+            if(self.AMMO1):
+                return False
+            else:
+                return True
+        elif(goal == self.ammo2loc):
+            if(self.AMMO2):
+                return False
+            else:
+                return True
+        return 'MUAHAHAHA'
+
+    
+    def action(self):
+        """ This function is called every step and should
+            return a tuple in the form: (turn, speed, shoot)
+        """
+    
+        obs = self.observation
+        #f = open('testfile.txt','a')
+        #f.write('CheckingVision: ' + str(self.goal) + '\n')
+        if(self.inVisionRange(obs.loc, self.ammo1loc) != self.inVisionRange(obs.loc, self.ammo2loc)):
+            if(self.inVisionRange(obs.loc, self.ammo1loc)):
+                if(len(obs.objects)>0):
+                    Agent.AMMO1 = True
+                else:
+                    Agent.AMMO1 = False
+            else:
+                if(len(obs.objects)>0):
+                    Agent.AMMO2 = True
+                else:
+                    Agent.AMMO2 = False
+        cps1 = obs.cps[0]
+        cps2 = obs.cps[1]
+        ammo = False
+        if(obs.ammo > 0):
+            ammo = True
+        foes = False
+        if(len(obs.foes) > 0):
+            foes = True
+        state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
         
-        self.lastaction = action
-        self.laststate = state
+        shoot = False
+        action = -1
+        #f.write('GOAL: ' + str(self.goal) + '\n')
+        
+        if(self.goal == None):
+            (action, value) = self.planAction(state)
+            shoot = self.doAction(action, obs)
+            self.lastaction = action
+            self.laststate = state
+            #f.write('Initialized: ' + str(state) + ' ' + str(action) + '\n')           
+        elif(self.goalReached(self.goal, obs)):
+            (action, actionvalue) = self.planAction(state)
+            reward = self.getReward(self.laststate, state, obs)
+            self.updateBlob(self.laststate, self.lastaction, state, actionvalue, reward)            
+            shoot = self.doAction(action, obs)
+            #f.write('Updating Qvalues: ' + str(self.goal)+ '\n')
+            self.lastaction = action
+            self.laststate = state
+            #f.write('Goal REACHED oldaction: ' + str(self.laststate)+'|'+str(self.lastaction)+ ' newaction: ' + str(state) + ' ' + str(action) + '\n')    
+        
+        
+        
+        
+        #f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
+        #f.write('Observation: ' + str(obs) + '\n')
+            
+        
+        
 
         #f.write('taking action!' + str(action) + '\n')
-        shoot = self.doAction(action, obs)
-
+        
         #f.write('haha we did it!' + str(self.goal) + '\n')
         
         # Compute path, angle and drive
@@ -264,7 +340,6 @@ class Agent(object):
             turn = 0
             speed = 0
         #f.write('TODO: ' + str(speed) + "|" +str(self.settings.max_speed) + ' ' + str(turn) + "|" +str(self.settings.max_turn) + '\n\n')
-        #f.write('SHOOT!!?!?!?' + str(shoot))
         #f.close()
         
         return (turn,speed,shoot)
