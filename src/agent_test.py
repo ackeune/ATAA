@@ -164,9 +164,9 @@ class Agent(object):
         
     def doAction(self, action, obs):
         shoot = False
-        f = open('doaction.txt','a')
-        f.write('doingit\n')
-        f.close()
+        #f = open('doaction.txt','a')
+        #f.write('doingit\n')
+        #f.close()
         if action == 0:
             self.goal = self.cps1loc #nearestCPS(obs.loc)
         elif action == 1:
@@ -185,9 +185,9 @@ class Agent(object):
                 shoot = True
         else:
             self.goal = (17,17) #just to check bugs
-        f = open('doaction.txt','a')
-        f.write('doingit' + str(self.goal) + '\n')
-        f.close()
+        #f = open('doaction.txt','a')
+        #f.write('doingit' + str(self.goal) + '\n')
+        #f.close()
         return shoot
         
     
@@ -208,8 +208,8 @@ class Agent(object):
         if(len(obs.foes) > 0):
             foes = True
         state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
-        f = open('testfile.txt','a')
-        f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
+        #f = open('testfile.txt','a')
+        #f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
         #f.write('Observation: ' + str(obs) + '\n')
         if str(state) in self.blobdict:
             values = self.blobdict[str(state)]
@@ -225,13 +225,13 @@ class Agent(object):
                 elif(values[i] == maxVal):
                     maxVals.append(i)
             action = random.choice(maxVals)
-            f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '\n')
+            #f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '\n')
         else: 
             #[cap nearest, get ammo] hunt/camp points/control zone
             values = [self.Qinit, self.Qinit, self.Qinit, self.Qinit]
             Agent.blobdict[str(state)] = values
             action = random.choice(maxVals)
-            f.write('notinblobyet' + '\n')
+            #f.write('notinblobyet' + '\n')
             
         if(self.lastaction > -1):
             reward = self.getReward(self.laststate, state, obs)
@@ -240,19 +240,19 @@ class Agent(object):
             newvalues = oldvalues
             newvalues[self.lastaction] += toadd
             Agent.blobdict[str(self.laststate)] = newvalues
-            f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
+            #f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
         
         self.lastaction = action
         self.laststate = state
 
-        f.write('taking action!' + str(action) + '\n')
+        #f.write('taking action!' + str(action) + '\n')
         shoot = self.doAction(action, obs)
 
-        f.write('haha we did it!' + str(self.goal) + '\n')
+        #f.write('haha we did it!' + str(self.goal) + '\n')
         
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
-        f.write('Path: ' + str(path) +'\n')
+        #f.write('Path: ' + str(path) +'\n')
         if path:
             dx = path[0][0] - obs.loc[0]
             dy = path[0][1] - obs.loc[1]
@@ -263,9 +263,9 @@ class Agent(object):
         else:
             turn = 0
             speed = 0
-        f.write('TODO: ' + str(speed) + "|" +str(self.settings.max_speed) + ' ' + str(turn) + "|" +str(self.settings.max_turn) + '\n\n')
-        f.write('SHOOT!!?!?!?' + str(shoot))
-        f.close()
+        #f.write('TODO: ' + str(speed) + "|" +str(self.settings.max_speed) + ' ' + str(turn) + "|" +str(self.settings.max_turn) + '\n\n')
+        #f.write('SHOOT!!?!?!?' + str(shoot))
+        #f.close()
         
         return (turn,speed,shoot)
         
