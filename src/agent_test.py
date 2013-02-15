@@ -152,7 +152,6 @@ class Agent(object):
         if (laststate[2] != state[2] and state[2] != self.team):
             reward-=5
         if ((state[0] == 2 and laststate[0] == 2 )or(state[0] == 3 and laststate[0] == 3)):
-            reward+=2
             if obs.ammo > 0 :
                 reward+=9
         if(laststate[3]< state[3] ):
@@ -174,15 +173,7 @@ class Agent(object):
         elif action == 2:
             self.goal = self.ammo1loc #closest ammo/spawned ammo
         elif action == 3:
-            self.goal = self.ammo2loc #closest ammo/spawned ammo
-        elif action == 4:
-            # Shoot enemies
-            if (obs.ammo > 0 and 
-            obs.foes and 
-            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
-            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
-                self.goal = obs.foes[0][0:2]
-                shoot = True
+            self.goal = self.ammo2loc #closest ammo/spawned ammo        
         else:
             self.goal = (17,17) #just to check bugs
         #f = open('doaction.txt','a')
@@ -229,10 +220,8 @@ class Agent(object):
         Agent.blobdict[str(laststate)] = newvalues
         #f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
 
-    def inVisionRange(self, loc, obj):
-        diffx = abs(loc[0]-obj[0])
-        diffy = abs(loc[1]-obj[1])
-        if(diffx+diffy <= self.settings.max_see):
+    def inVisionRange(self, loc1, loc2):
+        if(point_dist(loc1, loc2) <= self.settings.max_see):
             return True
         else:
             return False
@@ -261,7 +250,7 @@ class Agent(object):
                 return False
             else:
                 return True
-        return 'MUAHAHAHA'
+        return True #after shooting ur done
 
     
     def action(self):
@@ -293,9 +282,8 @@ class Agent(object):
             foes = True
         state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
         
-        shoot = False
+        
         action = -1
-        #f.write('GOAL: ' + str(self.goal) + '\n')
         
         if(self.goal == None):
             (action, value) = self.planAction(state)
@@ -313,19 +301,24 @@ class Agent(object):
             self.laststate = state
             #f.write('Goal REACHED oldaction: ' + str(self.laststate)+'|'+str(self.lastaction)+ ' newaction: ' + str(state) + ' ' + str(action) + '\n')    
         
-        
-        
-        
-        #f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
-        #f.write('Observation: ' + str(obs) + '\n')
-            
-        
-        
 
-        #f.write('taking action!' + str(action) + '\n')
-        
-        #f.write('haha we did it!' + str(self.goal) + '\n')
-        
+        #f.write('justbeforeshoot: ')
+        shoot = False
+        # Shoot enemies
+        if (obs.ammo > 0 and 
+            obs.foes and 
+            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
+            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
+                foe = obs.foes[0][0:2]
+                pathtofoe = find_path(obs.loc, foe, self.mesh, self.grid, self.settings.tilesize)
+                dx = pathtofoe[0][0] - obs.loc[0]
+                dy = pathtofoe[0][1] - obs.loc[1]
+                turn = angle_fix(math.atan2(dy, dx) - obs.angle)
+                if turn <= self.settings.max_turn or turn >= -self.settings.max_turn:
+                    shoot = True
+                    self.goal = foe
+
+                
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         #f.write('Path: ' + str(path) +'\n')
