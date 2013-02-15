@@ -1,4 +1,4 @@
-from random import randrange
+import random
 
 class Agent(object):
 
@@ -147,9 +147,9 @@ class Agent(object):
             reward+=5
         if (laststate[2] != self.team and state[2] == self.team):
             reward+=5
-        if (laststate[1] == self.team and state[1] != self.team):
+        if (laststate[1] != state[1] and state[1] != self.team):
             reward-=5
-        if (laststate[2] == self.team and state[2] != self.team):
+        if (laststate[2] != state[2] and state[2] != self.team):
             reward-=5
         if ((state[0] == 2 and laststate[0] == 2 )or(state[0] == 3 and laststate[0] == 3)):
             reward+=2
@@ -162,7 +162,33 @@ class Agent(object):
         return reward
         
         
-        
+    def doAction(self, action, obs):
+        shoot = False
+        f = open('doaction.txt','a')
+        f.write('doingit\n')
+        f.close()
+        if action == 0:
+            self.goal = self.cps1loc #nearestCPS(obs.loc)
+        elif action == 1:
+            self.goal = self.cps2loc #nearestCPS(obs.loc)
+        elif action == 2:
+            self.goal = self.ammo1loc #closest ammo/spawned ammo
+        elif action == 3:
+            self.goal = self.ammo2loc #closest ammo/spawned ammo
+        elif action == 4:
+            # Shoot enemies
+            if (obs.ammo > 0 and 
+            obs.foes and 
+            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
+            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
+                self.goal = obs.foes[0][0:2]
+                shoot = True
+        else:
+            self.goal = (17,17) #just to check bugs
+        f = open('doaction.txt','a')
+        f.write('doingit' + str(self.goal) + '\n')
+        f.close()
+        return shoot
         
     
     def action(self):
@@ -184,7 +210,7 @@ class Agent(object):
         state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
         f = open('testfile.txt','a')
         f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
-        f.write('Observation: ' + str(obs) + '\n')
+        #f.write('Observation: ' + str(obs) + '\n')
         if str(state) in self.blobdict:
             values = self.blobdict[str(state)]
             maxVals = []
@@ -195,16 +221,16 @@ class Agent(object):
                     maxVals.append(i)
                 elif(values[i] > maxVal):
                     maxVal = values[i]
-                    maxVals = [values[i]]
+                    maxVals = [i]
                 elif(values[i] == maxVal):
                     maxVals.append(i)
-            action = maxVals[randrange(0,len(maxVals)-1)]
+            action = random.choice(maxVals)
             f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '\n')
         else: 
-            #[cap nearest, get ammo, hunt] camp points/control zone
-            values = [self.Qinit, self.Qinit, self.Qinit]
+            #[cap nearest, get ammo] hunt/camp points/control zone
+            values = [self.Qinit, self.Qinit, self.Qinit, self.Qinit]
             Agent.blobdict[str(state)] = values
-            action = randrange(0,2)
+            action = random.choice(maxVals)
             f.write('notinblobyet' + '\n')
             
         if(self.lastaction > -1):
@@ -218,22 +244,11 @@ class Agent(object):
         
         self.lastaction = action
         self.laststate = state
-        if action == 0:
-            self.goal = self.cps1loc #nearestCPS(obs.loc)
-        elif action == 1:
-            self.goal = self.ammo1loc #closest ammo/spawned ammo
-        elif action == 2:
-            # Shoot enemies
-            if (obs.ammo > 0 and 
-            obs.foes and 
-            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
-            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
-                self.goal = obs.foes[0][0:2]
-                shoot = True
-        else:
-            self.goal = (17,17) #just to check bugs
 
-        f.write('haha we did it!' + str(action) + str(self.goal) + '\n')
+        f.write('taking action!' + str(action) + '\n')
+        shoot = self.doAction(action, obs)
+
+        f.write('haha we did it!' + str(self.goal) + '\n')
         
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
