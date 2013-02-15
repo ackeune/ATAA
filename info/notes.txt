@@ -1,0 +1,4 @@
+NOTES:
+Bijhouden: goals allies, vision allies in state
+		-werkt misschien niet bij agent id = 0, omdat de andere agents dan nog geen observation hebben gedaan? of wel
+		

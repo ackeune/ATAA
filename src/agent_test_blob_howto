@@ -1,0 +1,12 @@
+obj = {1:2}
+>>> pickle.dump(obj, open('pickle.txt', 'wb'))
+>>> blob = open('pickle.txt', 'rb')
+>>> blob
+<open file 'pickle.txt', mode 'rb' at 0x05B2D700>
+>>> pickle.loads(blob.read())
+{1: 2}
+>>> blob.seek(0)
+>>> ha = pickle.loads(blob.read())
+>>> ha[1]
+2
+>>> ha[2]

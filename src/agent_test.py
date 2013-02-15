@@ -2,6 +2,10 @@ from random import randrange
 
 class Agent(object):
 
+    alpha = 0.1
+    gamma = 0.8
+    Qinit = 0
+    
     blobdict = {}
     lastaction = -1
     laststate = ()
@@ -10,8 +14,8 @@ class Agent(object):
     goal2 = (0,0)
     cps1loc = (216, 56)
     cps2loc = (248, 216)
-    ammo1loc = (9.5*16, 8*16)
-    ammo2loc = (19.5*16, 8*16)
+    ammo1loc = (9.5*16, 8.5*16)
+    ammo2loc = (19.5*16, 8.5*16)
 
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
@@ -165,10 +169,12 @@ class Agent(object):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
+        self.goal = None
         obs = self.observation
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
         action = -1
+        shoot = False
         ammo = False
         if(obs.ammo > 0):
             ammo = True
@@ -176,57 +182,75 @@ class Agent(object):
         if(len(obs.foes) > 0):
             foes = True
         state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
-        reward = self.getReward(self.laststate, state, obs)
-        if not str(state) in self.blobdict:
+        f = open('testfile.txt','a')
+        f.write('Curstate: ' + str(state) + 'Laststate: ' + str(self.laststate) + 'Lastaction: ' + str(self.lastaction) + '\n')
+        f.write('Observation: ' + str(obs) + '\n')
+        if str(state) in self.blobdict:
+            values = self.blobdict[str(state)]
+            maxVals = []
+            maxVal = None
+            for i in range(0,len(values)):
+                if(maxVal == None):
+                    maxVal = values[i]
+                    maxVals.append(i)
+                elif(values[i] > maxVal):
+                    maxVal = values[i]
+                    maxVals = [values[i]]
+                elif(values[i] == maxVal):
+                    maxVals.append(i)
+            action = maxVals[randrange(0,len(maxVals)-1)]
+            f.write('Taking action from Q:' + str(values) + 'Action: ' + str(action) + '\n')
+        else: 
             #[cap nearest, get ammo, hunt] camp points/control zone
-            Agent.blobdict[str(state)] = '[10, 10, 10]'
+            values = [self.Qinit, self.Qinit, self.Qinit]
+            Agent.blobdict[str(state)] = values
             action = randrange(0,2)
-        else:
-            values = eval(self.blobdict[str(state)])
-            action = max( (v, i) for i, v in enumerate(values) )[1]
-        self.lastaction = action
-
-        
-        if obs.respawn_in == -1:
-            if cps1[2] != self.team and self.diffGoal(self.cps1loc) == True:
-                    self.goal = self.cps1loc
-                    self.setGoal(self.cps1loc)
-            elif cps2[2] != self.team and self.diffGoal(self.cps2loc):
-                    self.goal = self.cps2loc
-                    self.setGoal(self.cps2loc)
-            elif self.diffGoal(self.ammo1loc):
-                self.goal = self.ammo1loc
-                self.setGoal(self.ammo1loc)
-            elif self.diffGoal(self.ammo2loc):
-                self.goal = self.ammo2loc
-                self.setGoal(self.ammo2loc)
-        else:
-            self.setGoal((200, 200))
-            self.goal = (200, 200)
+            f.write('notinblobyet' + '\n')
             
-        # Shoot enemies
-        shoot = False
-        if (obs.ammo > 0 and 
+        if(self.lastaction > -1):
+            reward = self.getReward(self.laststate, state, obs)
+            oldvalues = self.blobdict[str(self.laststate)]
+            toadd = self.alpha*(reward + self.gamma*values[action] - oldvalues[self.lastaction])
+            newvalues = oldvalues
+            newvalues[self.lastaction] += toadd
+            Agent.blobdict[str(self.laststate)] = newvalues
+            f.write('Reward: ' + str(reward) + 'Oldvalues: ' + str(oldvalues) + 'toadd: ' + str(toadd) + 'Newvalues: ' + str(newvalues) + '\n') 
+        
+        self.lastaction = action
+        self.laststate = state
+        if action == 0:
+            self.goal = self.cps1loc #nearestCPS(obs.loc)
+        elif action == 1:
+            self.goal = self.ammo1loc #closest ammo/spawned ammo
+        elif action == 2:
+            # Shoot enemies
+            if (obs.ammo > 0 and 
             obs.foes and 
             point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
             not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
-            self.goal = obs.foes[0][0:2]
-            shoot = True
+                self.goal = obs.foes[0][0:2]
+                shoot = True
+        else:
+            self.goal = (17,17) #just to check bugs
 
+        f.write('haha we did it!' + str(action) + str(self.goal) + '\n')
+        
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
+        f.write('Path: ' + str(path) +'\n')
         if path:
             dx = path[0][0] - obs.loc[0]
             dy = path[0][1] - obs.loc[1]
             turn = angle_fix(math.atan2(dy, dx) - obs.angle)
             if turn > self.settings.max_turn or turn < -self.settings.max_turn:
                 shoot = False
-                speed = 0.5*(dx**2 + dy**2)**0.5
-            else:
-                speed = (dx**2 + dy**2)**0.5
+            speed = (dx**2 + dy**2)**0.5
         else:
             turn = 0
             speed = 0
+        f.write('TODO: ' + str(speed) + "|" +str(self.settings.max_speed) + ' ' + str(turn) + "|" +str(self.settings.max_turn) + '\n\n')
+        f.write('SHOOT!!?!?!?' + str(shoot))
+        f.close()
         
         return (turn,speed,shoot)
         
