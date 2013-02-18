@@ -1,0 +1,765 @@
+(dp1
+S'(11, 1, 1, False, False, False, True)'
+p2
+(lp3
+F0.50608000000000009
+aI0
+aI0
+aI0
+asS'(3, 0, 1, True, False, False, True)'
+p4
+(lp5
+F3.1490682336000004
+aI0
+aI0
+aF1.7748000000000002
+asS'(10, 0, 1, True, True, False, True)'
+p6
+(lp7
+F0
+aI0
+aI0
+aI0
+asS'(6, 0, 2, False, True, False, True)'
+p8
+(lp9
+F0
+aI0
+aI0
+aI0
+asS'(2, 1, 0, False, False, True, False)'
+p10
+(lp11
+F0.5
+aI0
+aI0
+aI0
+asS'(3, 0, 1, False, False, True, False)'
+p12
+(lp13
+F0
+aF0.040000000000000008
+aI0
+aF6
+asS'(0, 0, 0, False, False, False, False)'
+p14
+(lp15
+F0
+aI0
+aF-0.5
+aF-0.5
+asS'(0, 0, 1, False, True, False, False)'
+p16
+(lp17
+F0
+aI0
+aI0
+aF0
+asS'(5, 1, 0, False, False, False, True)'
+p18
+(lp19
+F0.5
+aI0
+aI0
+aI0
+asS'(0, 0, 0, False, False, False, True)'
+p20
+(lp21
+F0
+aF0
+aI0
+aF0
+asS'(10, 1, 1, True, False, False, True)'
+p22
+(lp23
+F1
+aI0
+aI0
+aI0
+asS'(13, 0, 1, False, False, True, True)'
+p24
+(lp25
+F0
+aI0
+aI0
+aI0
+asS'(3, 0, 1, True, False, False, False)'
+p26
+(lp27
+F0.90000000000000002
+aF1
+aI0
+aI0
+asS'(13, 0, 0, False, False, False, False)'
+p28
+(lp29
+F0
+aI0
+aI0
+aI0
+asS'(3, 1, 0, True, True, False, True)'
+p30
+(lp31
+F0.90000000000000002
+aF-1.7000000000000002
+aI0
+aI0
+asS'(2, 1, 0, False, False, False, False)'
+p32
+(lp33
+F0.45000000000000001
+aI0
+aI0
+aI0
+asS'(3, 1, 1, True, True, True, True)'
+p34
+(lp35
+F0.90000000000000002
+aI0
+aI0
+aI0
+asS'(14, 0, 0, False, False, False, False)'
+p36
+(lp37
+F0
+aI0
+aI0
+aI0
+asS'(5, 0, 1, True, False, False, True)'
+p38
+(lp39
+F0
+aI0
+aI0
+aI0
+asS'(4, 0, 1, False, True, True, True)'
+p40
+(lp41
+F-1
+aI0
+aI0
+aI0
+asS'(3, 0, 1, True, False, True, True)'
+p42
+(lp43
+F1.782
+aI0
+aI0
+aF-1.3500000000000001
+asS'(11, 0, 1, False, False, True, True)'
+p44
+(lp45
+F0
+aI0
+aI0
+aI0
+asS'(7, 0, 1, False, True, False, True)'
+p46
+(lp47
+F0
+aI0
+aI0
+aI0
+asS'(11, 0, 2, False, True, True, False)'
+p48
+(lp49
+F0
+aI0
+aI0
+aI0
+asS'(5, 0, 1, True, False, False, False)'
+p50
+(lp51
+F0
+aI0
+aI0
+aI0
+asS'(3, 0, 1, False, True, False, True)'
+p52
+(lp53
+F0
+aI0
+aF-0.5
+aF-1
+asS'(0, 1, 0, False, True, False, False)'
+p54
+(lp55
+F0
+aI0
+aI0
+aI0
+asS'(6, 0, 1, False, True, False, True)'
+p56
+(lp57
+F0
+aF0
+aI0
+aI0
+asS'(3, 0, 0, False, False, False, False)'
+p58
+(lp59
+F-0.5
+aI0
+aF-0.5
+aF-0.5
+asS'(11, 0, 1, True, True, False, False)'
+p60
+(lp61
+F0
+aI0
+aI0
+aI0
+asS'(13, 0, 0, False, True, False, False)'
+p62
+(lp63
+F0
+aI0
+aI0
+aI0
+asS'(2, 0, 0, False, False, False, True)'
+p64
+(lp65
+F0
+aI0
+aI0
+aI0
+asS'(2, 0, 0, False, False, True, False)'
+p66
+(lp67
+F0
+aF0
+aI0
+aF-1
+asS'(5, 0, 1, False, False, False, True)'
+p68
+(lp69
+F0
+aF0
+aI0
+aI0
+asS'(3, 0, 0, False, True, False, False)'
+p70
+(lp71
+F0
+aI0
+aI0
+aF-0.5
+asS'(4, 1, 1, False, False, False, True)'
+p72
+(lp73
+F0.5
+aI0
+aI0
+aI0
+asS'(5, 0, 0, False, False, False, True)'
+p74
+(lp75
+F0
+aI0
+aI0
+aI0
+asS'(2, 0, 0, False, False, True, True)'
+p76
+(lp77
+F0
+aI0
+aI0
+aF-1
+asS'(3, 0, 1, False, False, False, False)'
+p78
+(lp79
+F0
+aF0.90500000000000003
+aF0
+aI0
+asS'(11, 0, 1, False, False, False, False)'
+p80
+(lp81
+F0
+aF0.48999999999999999
+aI0
+aI0
+asS'(12, 1, 1, False, False, False, True)'
+p82
+(lp83
+F0.6128323200000001
+aF0.50319999999999998
+aI0
+aI0
+asS'(2, 0, 0, False, False, False, False)'
+p84
+(lp85
+F0
+aI0
+aF0
+aF0
+asS'(3, 0, 1, False, True, False, False)'
+p86
+(lp87
+F0
+aI0
+aI0
+aI0
+asS'(11, 1, 0, True, False, True, True)'
+p88
+(lp89
+F0
+aI0
+aI0
+aI0
+asS'(5, 0, 2, False, True, False, True)'
+p90
+(lp91
+F0
+aI0
+aI0
+aI0
+asS'(5, 1, 0, True, False, False, True)'
+p92
+(lp93
+F0.14302080000000003
+aI0
+aI0
+aI0
+asS'(13, 0, 1, False, False, False, True)'
+p94
+(lp95
+F0
+aI0
+aI0
+aI0
+asS'(3, 0, 0, False, True, False, True)'
+p96
+(lp97
+F0
+aF0
+aF5.5
+aI0
+asS'(9, 0, 0, False, False, False, False)'
+p98
+(lp99
+F0
+aI0
+aI0
+aI0
+asS'(0, 0, 0, False, True, False, False)'
+p100
+(lp101
+F-0.45999999999999996
+aI0
+aF-0.5
+aF0
+asS'(0, 0, 1, False, False, False, False)'
+p102
+(lp103
+F0
+aF1.2725636
+aF-0.5
+aF0
+asS'(3, 1, 1, True, True, False, True)'
+p104
+(lp105
+F0.90000000000000002
+aI0
+aI0
+aI0
+asS'(11, 0, 0, False, True, False, True)'
+p106
+(lp107
+F0
+aF0
+aI0
+aI0
+asS'(3, 0, 1, True, True, False, False)'
+p108
+(lp109
+F4.04408952
+aI0
+aI0
+aI0
+asS'(10, 1, 0, True, False, False, True)'
+p110
+(lp111
+F0.56479999999999997
+aI0
+aI0
+aI0
+asS'(0, 2, 2, False, True, True, False)'
+p112
+(lp113
+F0.94999999999999996
+aI0
+aI0
+aF0.5
+asS'(3, 1, 1, True, False, True, True)'
+p114
+(lp115
+F1.4720000000000002
+aI0
+aI0
+aI0
+asS'(2, 1, 0, False, False, False, True)'
+p116
+(lp117
+F0.85499999999999998
+aI0
+aI0
+aI0
+asS'(6, 0, 1, True, False, True, True)'
+p118
+(lp119
+F0
+aF0
+aI0
+aI0
+asS'(9, 1, 1, False, False, False, False)'
+p120
+(lp121
+F3
+aI0
+aI0
+aI0
+asS'(10, 0, 0, False, False, False, True)'
+p122
+(lp123
+F0
+aF0
+aI0
+aI0
+asS'(3, 2, 0, True, False, True, True)'
+p124
+(lp125
+F1.5
+aI0
+aI0
+aI0
+asS'(2, 1, 0, True, False, True, False)'
+p126
+(lp127
+F0.5
+aI0
+aI0
+aI0
+asS'(7, 0, 1, False, False, True, False)'
+p128
+(lp129
+F0
+aI0
+aI0
+aI0
+asS'(3, 0, 1, False, True, True, True)'
+p130
+(lp131
+F0
+aF0
+aI0
+aI0
+asS'(2, 1, 0, True, True, False, False)'
+p132
+(lp133
+F0
+aI0
+aI0
+aI0
+asS'(12, 0, 0, False, False, True, False)'
+p134
+(lp135
+F0
+aI0
+aI0
+aF5.5
+asS'(14, 0, 0, False, False, True, False)'
+p136
+(lp137
+F0
+aI0
+aI0
+aI0
+asS'(0, 0, 1, False, False, True, False)'
+p138
+(lp139
+F0
+aI0
+aF-0.45999999999999996
+aI0
+asS'(2, 0, 0, False, True, False, False)'
+p140
+(lp141
+F0
+aF-0.5
+aI0
+aI0
+asS'(11, 0, 1, False, False, False, True)'
+p142
+(lp143
+F0
+aI0
+aF5.620000000000001
+aI0
+asS'(11, 0, 0, True, False, False, True)'
+p144
+(lp145
+F0.15342566400000004
+aI0
+aI0
+aI0
+asS'(8, 0, 0, False, False, False, True)'
+p146
+(lp147
+F0
+aI0
+aI0
+aI0
+asS'(3, 0, 0, False, False, True, False)'
+p148
+(lp149
+F-0.5
+aF0
+aF-0.5
+aF-0.5
+asS'(4, 0, 1, True, False, True, True)'
+p150
+(lp151
+F0
+aI0
+aI0
+aI0
+asS'(3, 1, 0, True, False, False, True)'
+p152
+(lp153
+F0.90000000000000002
+aF4.6291435750080012
+aI0
+aI0
+asS'(3, 0, 1, False, False, True, True)'
+p154
+(lp155
+F0
+aI0
+aI0
+aF6
+asS'(3, 1, 0, True, False, True, True)'
+p156
+(lp157
+F1.21
+aI0
+aI0
+aI0
+asS'(6, 0, 2, False, True, False, False)'
+p158
+(lp159
+F-0.5
+aI0
+aI0
+aI0
+asS'(3, 0, 1, True, True, True, True)'
+p160
+(lp161
+F1.21
+aI0
+aI0
+aF0.97200000000000009
+asS'(3, 0, 0, False, False, False, True)'
+p162
+(lp163
+F-1
+aF-0.5
+aF0
+aI0
+asS'(3, 1, 1, False, False, False, False)'
+p164
+(lp165
+F0.53600000000000003
+aI0
+aI0
+aI0
+asS'(0, 1, 1, False, False, False, False)'
+p166
+(lp167
+F3.2454719999999999
+aI0
+aI0
+aI0
+asS'(13, 0, 1, False, True, False, True)'
+p168
+(lp169
+F0
+aI0
+aF-0.5
+aI0
+asS'(3, 0, 0, True, False, False, True)'
+p170
+(lp171
+F1.608984
+aI0
+aF2.1260387200000004
+aI0
+asS'(10, 0, 1, True, True, False, False)'
+p172
+(lp173
+F0
+aI0
+aF0
+aI0
+asS'(0, 0, 1, False, True, True, True)'
+p174
+(lp175
+F0
+aI0
+aI0
+aI0
+asS'(0, 1, 1, False, False, True, False)'
+p176
+(lp177
+F6.1050000000000004
+aI0
+aI0
+aI0
+asS'(11, 0, 0, False, False, False, True)'
+p178
+(lp179
+F-0.5
+aI0
+aI0
+aI0
+asS'(3, 0, 2, False, True, True, True)'
+p180
+(lp181
+F0
+aI0
+aF3.5
+aI0
+asS'(11, 0, 1, True, False, False, True)'
+p182
+(lp183
+F0
+aF0
+aI0
+aI0
+asS'(3, 0, 1, False, False, False, True)'
+p184
+(lp185
+F0.5
+aI0
+aF0
+aF0
+asS'(7, 0, 0, False, True, False, False)'
+p186
+(lp187
+F0
+aI0
+aI0
+aI0
+asS'(12, 0, 0, False, False, False, False)'
+p188
+(lp189
+F0
+aI0
+aI0
+aI0
+asS'(8, 1, 0, False, False, False, False)'
+p190
+(lp191
+F0
+aI0
+aI0
+aI0
+asS'(5, 1, 0, True, False, False, False)'
+p192
+(lp193
+F-1.9600000000000002
+aI0
+aI0
+aI0
+asS'(5, 1, 0, False, False, False, False)'
+p194
+(lp195
+F0.045472000000000005
+aI0
+aI0
+aI0
+asS'(0, 0, 1, False, True, True, False)'
+p196
+(lp197
+F0
+aI0
+aF-0.5
+aI0
+asS'(4, 1, 1, True, False, False, True)'
+p198
+(lp199
+F2.823
+aI0
+aI0
+aI0
+asS'(10, 0, 1, True, False, False, False)'
+p200
+(lp201
+F0
+aI0
+aI0
+aI0
+asS'(2, 1, 0, False, True, False, False)'
+p202
+(lp203
+F0.032400000000000005
+aI0
+aI0
+aI0
+asS'(3, 1, 0, True, False, False, False)'
+p204
+(lp205
+F1.4000000000000001
+aI0
+aI0
+aI0
+asS'(6, 0, 1, True, False, True, False)'
+p206
+(lp207
+F0
+aI0
+aI0
+aI0
+asS'(10, 0, 0, True, False, False, False)'
+p208
+(lp209
+F-0.5
+aI0
+aI0
+aI0
+asS'(3, 0, 1, True, True, False, True)'
+p210
+(lp211
+F1.21
+aI0
+aI0
+aI0
+asS'(13, 0, 1, False, False, False, False)'
+p212
+(lp213
+F0
+aI0
+aI0
+aI0
+asS'(13, 0, 2, False, True, True, False)'
+p214
+(lp215
+F0
+aI0
+aI0
+aI0
+asS'(11, 0, 1, False, True, False, True)'
+p216
+(lp217
+F0
+aF0.5
+aI0
+aI0
+asS'(5, 0, 2, False, True, False, False)'
+p218
+(lp219
+F0
+aI0
+aI0
+aI0
+as.

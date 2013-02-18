@@ -32,8 +32,7 @@ class Agent(object):
     ORANGERIGHTZONE = 12
     GRAYLEFTZONE = 13
     GRAYRIGHTZONE = 14
-    tem = 0
-    score = (0,0)
+
     AMMO1 = True
     AMMO2 = True
     
@@ -52,7 +51,7 @@ class Agent(object):
         self.settings = settings
         self.goal = None
         self.callsign = '%s-%d'% (('BLU' if team == TEAM_BLUE else 'RED'), id)
-        Agent.tem = team
+
         # Read the binary blob, we're not using it though
         if blob is not None:
             print "Agent %s received binary blob of %s" % (
@@ -74,7 +73,6 @@ class Agent(object):
         """
         self.observation = observation
         self.selected = observation.selected
-        Agent.score = observation.score
         if observation.selected:
             print observation
 
@@ -191,11 +189,10 @@ class Agent(object):
         #f.close()
         if str(state) in self.blobdict:
             values = self.blobdict[str(state)]
-            randomAct = randint(0,len(values)-1)
-            cf = randint(0,30)
-            if cf==30:
-                value = values[randomAct]
-                action = randomAct
+            randomVal = randint(0,len(values))
+            cf = randint(0,10)
+            if False: #cf==10
+                action = values[randomVal]
             else:            
                 maxVals = []
                 maxVal = None
@@ -370,7 +367,6 @@ class Agent(object):
             interrupt (CTRL+C) by the user. Use it to
             store any learned variables and write logs/reports.
         """
-        if self.score[self.tem] >= self.score[1-self.tem] :
-            pickle.dump(self.blobdict, open('../src/agent_test_blob', 'wb'))
+        pickle.dump(self.blobdict, open('../src/agent_test_blob2', 'wb'))
         pass
         
