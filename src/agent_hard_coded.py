@@ -150,6 +150,8 @@ class Agent(object):
                 if len(obs.objects) >0:
                     for c in range (0, len(obs.objects)):
                         ammopos = obs.objects[c][0] +obs.objects[c][0][1]
+                else:
+                    ammopos = (0,0)
                 if ammopos == self.ammo1loc:
                       Agent.AMMO1 = True
                 elif ( self.locToZone(obs.loc) == 4):
