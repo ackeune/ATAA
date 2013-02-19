@@ -61,7 +61,6 @@ class Agent(object):
         if id == 0:
             self.all_agents = self.__class__.all_agents = []
         self.all_agents.append(self)
-
     def observe(self, observation):
         """ Each agent is passed an observation using this function,
             before being asked for an action. You can store either
@@ -134,18 +133,7 @@ class Agent(object):
             shoot = True
             
         if  obs.ammo > 0:
-<<<<<<< HEAD
-            if (self.AMMO1 == False):
-                self.goal = self.cps1loc
-                #Agent.AMMO1 = True
-                self.setGoal(self.cps1loc)
-            elif(self.AMMO2 ==False):
-                self.goal = self.cps2loc
-                self.setGoal(self.cps2loc)
-                #Agent.AMMO2 = True
-=======
-            if (obs.cps[0][2] != self.team):
-               
+            if (obs.cps[0][2] != self.team):               
                 self.goal = self.cps1loc
                 self.setGoal(self.cps1loc)
                 Agent.prevgoal = self.cps1loc
@@ -154,7 +142,6 @@ class Agent(object):
                 self.goal = self.cps2loc
                 self.setGoal(self.cps2loc)
                 Agent.prevgoal = self.cps2loc
->>>>>>> Upgraded hardcoded bot
             else:
                 if self.prevgoal != self.camp1loc:
                     self.goal = self.camp1loc
@@ -192,18 +179,6 @@ class Agent(object):
                       Agent.Ammospawned[1] = False
                       if self.set2 == False:
                         Agent.set2 = True
-<<<<<<< HEAD
-                        Agent.reset2 = self.t
-                f.write(str(ammopos) +'\n')
-                if self.diffGoal(self.ammo1loc) and self.AMMO1 ==True:
-                    self.goal = self.ammo1loc
-                    self.setGoal(self.ammo1loc)                  
-                    f.write('AMMO1 \n')
-                else:                   
-                    self.goal = self.ammo2loc
-                    self.setGoal(self.ammo2loc)
-                    f.write('AMMO2 \n')
-=======
                         Agent.reset2 = obs.step
                 nearestammo = self.closest_ammo(obs.loc)
                 ammochoice = list(self.Ammo)
@@ -225,7 +200,6 @@ class Agent(object):
                     
     
       
->>>>>>> Upgraded hardcoded bot
         
 
 
@@ -233,15 +207,15 @@ class Agent(object):
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
             dx = path[0][0] - obs.loc[0]
-            dy = path[0][1] - obs.loc[1]
-            
-            speed = ( dx ** 2 + dy ** 2 ) ** 0.5
-            
+            dy = path[0][1] - obs.loc[1]               
+            speed = ( dx ** 2 + dy ** 2 ) ** 0.5         
             turn = angle_fix( math.atan2(dy, dx) - obs.angle )
-            if abs(turn) > self.settings.max_turn:
-                speed = 0
-                self.shoot = False
-                speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
+        if abs(turn) > self.settings.max_turn:
+            speed = 0
+            self.shoot = False
+            speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
+
+        
         
         return (turn,speed,shoot)
 
