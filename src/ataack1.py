@@ -142,16 +142,16 @@ class Brigadier():
             return self.get_ammo(agent)
         
         cp = cp if cp else self.closest_cp(agent)
-        #print 'Agent {0}: defend {1}'.format(agent.id, cp)
+        print 'Agent {0}: defend {1}'.format(agent.id, cp)
         agent.goal = cp[:2]
 
     def cp_attack(self, agent, cp=None):
         cp = cp if cp else self.closest_cp(agent)
-        #print 'Agent {0}: attack {1}'.format(agent.id, cp )
+        print 'Agent {0}: attack {1}'.format(agent.id, cp )
         agent.goal = cp[:2]
 
     def get_ammo(self, agent, ammo_loc=None):
-        #print 'Agent {0}: get ammo'.format(agent.id)
+        print 'Agent {0}: get ammo'.format(agent.id)
         if not self.get_ammo_en_route(agent, 30):
             # for now, just make it walk somewhere else
             agent.goal = self.cps[0]

@@ -14,8 +14,7 @@ class Agent(object):
     set2 = False
     Ammo = [ammo1loc, ammo2loc]
     Ammospawned = [AMMO1, AMMO2]
-    CPS = [cps1loc, cps2loc]
-    UNCAPPEDCPS = list(CPS)
+            
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
     BOTCAPZONE = 2
@@ -104,24 +103,12 @@ class Agent(object):
             return a tuple in the form: (turn, speed, shoot)
         """
         obs = self.observation
-        if (obs.cps[0][2] != self.team):
-            Agent.UNCAPPEDCPS.append((obs.cps[0][0],obs.cps[0][1]))
-        else:
-            try: Agent.UNCAPPEDCPS.remove(obs.cps[0][2])
-            except:
-                pass
-        if (obs.cps[1][2] != self.team):
-            Agent.UNCAPPEDCPS.append((obs.cps[1][0],obs.cps[1][1]))
-        else:
-            try: Agent.UNCAPPEDCPS.remove(obs.cps[1][2])
-            except:
-                pass
         #no ammo
-        if (obs.step - self.reset1)> 9 and self.set1 == True:
+        if (obs.step - self.reset1)> 8 and self.set1 == True:
             Agent.AMMO1 = True
             Agent.Ammospawned[0] = True
             Agent.set1 = False
-        if (obs.step - self.reset1)> 9 and self.set2 == True:
+        if (obs.step - self.reset1)> 8 and self.set2 == True:
             Agent.AMMO2 = True
             Agent.Ammospawned[1] = True
             Agent.set2 = False
@@ -144,12 +131,17 @@ class Agent(object):
             not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
             self.goal = obs.foes[0][0:2]
             shoot = True
-        closestUCP =  self.closest_ucp(obs.loc)  
+            
         if  obs.ammo > 0:
-            if (len(self.UNCAPPEDCPS) > 0):
-                self.goal = self.UNCAPPEDCPS[closestUCP]
-                self.setGoal = self.UNCAPPEDCPS[closestUCP]
-                Agent.prevgoal = self.UNCAPPEDCPS[closestUCP]
+            if (obs.cps[0][2] != self.team):               
+                self.goal = self.cps1loc
+                self.setGoal(self.cps1loc)
+                Agent.prevgoal = self.cps1loc
+            elif(obs.cps[1][2] != self.team):
+                
+                self.goal = self.cps2loc
+                self.setGoal(self.cps2loc)
+                Agent.prevgoal = self.cps2loc
             else:
                 if self.prevgoal != self.camp1loc:
                     self.goal = self.camp1loc
@@ -193,12 +185,9 @@ class Agent(object):
                                
                 randomammo = self.Ammo[1]
                 ammochoice.remove(self.Ammo[nearestammo])
-                print 'bla'
+                print ammochoice
                 if self.diffGoal(self.Ammo[nearestammo]) and self.Ammospawned[nearestammo] == True:
-                    print 'NEAREST AMMO'
-                    print self.Ammo[nearestammo]
                     self.goal = self.Ammo[nearestammo]
-                    print self.goal
                     self.setGoal(self.Ammo[nearestammo])                  
                 
                 else:                              
@@ -231,24 +220,14 @@ class Agent(object):
         return (turn,speed,shoot)
 
     def closest_ammo(self, loc):
-        bestdist = 9999
-        best = 0
-        for i in range (0, len(self.Ammo)):
-            dist = ((loc[0]-self.Ammo[i][0]) ** 2 + (loc[1]-self.Ammo[i][1]) ** 2) ** 0.5
-            if dist < bestdist:
-                bestdist = dist
-                best = i
-        return best
-        
-    def closest_ucp(self, loc):
-         bestdist = 9999
-         best = 0
-         for i in range (0, len(self.UNCAPPEDCPS)):
-            dist = ((loc[0]-self.UNCAPPEDCPS[i][0]) ** 2 + (loc[1]-self.UNCAPPEDCPS[i][1]) ** 2) ** 0.5
-            if dist < bestdist:
-                bestdist = dist
-                best = i
-         return best
+            bestdist = 9999
+            best = 0
+            for i in range (0, len(self.Ammo)):
+                dist = ((loc[0]-self.Ammo[i][0]) ** 2 + (loc[1]-self.Ammo[i][1]) ** 2) ** 0.5
+                if dist < bestdist:
+                    bestdist = dist
+                    best = i
+            return best
     
 
     def locToZone(self, loc):
