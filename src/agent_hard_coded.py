@@ -4,8 +4,8 @@ class Agent(object):
     goal2 = (0,0)
     cps1loc = (216, 56)
     cps2loc = (248, 216)
-    ammo1loc = (9.5*16, 8*16)
-    ammo2loc = (19.5*16, 8*16)
+    ammo1loc = (9.5*16, 8.5*16)
+    ammo2loc = (19.5*16, 8.5*16)
     NAME = "Hard_Coded"
     AMMO1 = True
     AMMO2 = True
@@ -57,6 +57,7 @@ class Agent(object):
         if id == 0:
             self.all_agents = self.__class__.all_agents = []
         self.all_agents.append(self)
+
     def observe(self, observation):
         """ Each agent is passed an observation using this function,
             before being asked for an action. You can store either
@@ -122,18 +123,12 @@ class Agent(object):
             
         if  obs.ammo > 0:
             if (self.AMMO1 == False):
-                print 'bla '
                 self.goal = self.cps1loc
                 #Agent.AMMO1 = True
-               # print'bla2 '
                 self.setGoal(self.cps1loc)
-                #print 'bla3 '
             elif(self.AMMO2 ==False):
-                #print 'bla4'
                 self.goal = self.cps2loc
-                #print 'bla5 '
                 self.setGoal(self.cps2loc)
-                #print 'bla6 '
                 #Agent.AMMO2 = True
             else:
                 if self.goal == self.ammo1loc:
@@ -179,11 +174,6 @@ class Agent(object):
                     self.goal = self.ammo2loc
                     self.setGoal(self.ammo2loc)
                     f.write('AMMO2 \n')
-                    
-                
-                    
-    
-      
         
         f.close()
 
@@ -192,14 +182,14 @@ class Agent(object):
         if path:
             dx = path[0][0] - obs.loc[0]
             dy = path[0][1] - obs.loc[1]
-            turn = angle_fix(math.atan2(dy, dx) - obs.angle)
-            if turn > self.settings.max_turn or turn < -self.settings.max_turn:
-                shoot = False
-            speed = (dx**2 + dy**2)**0.5
-        else:
-            turn = 0
-            speed = 0
-        
+            
+            speed = ( dx ** 2 + dy ** 2 ) ** 0.5
+            
+            turn = angle_fix( math.atan2(dy, dx) - obs.angle )
+            if abs(turn) > self.settings.max_turn:
+                speed = 0
+                self.shoot = False
+                speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
         
         return (turn,speed,shoot)
 

@@ -340,8 +340,6 @@ class Agent(object):
         if path:
             dx = path[0][0] - obs.loc[0]
             dy = path[0][1] - obs.loc[1]
-            
-            pygame.draw.line(self.grid, 'green', obs.loc, (dx,dy), 1)
             turn = angle_fix(math.atan2(dy, dx) - obs.angle)
             if turn > self.settings.max_turn or turn < -self.settings.max_turn:
                 shoot = False
