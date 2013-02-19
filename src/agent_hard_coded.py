@@ -9,6 +9,8 @@ class Agent(object):
     NAME = "Hard_Coded"
     AMMO1 = True
     AMMO2 = True
+    set1 = False
+    set2 = False
     
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
@@ -96,7 +98,15 @@ class Agent(object):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
-        Agent.t=+1
+        Agent.t+=1
+        #no ammo
+        if (self.t - self.reset1)> 8 and self.set1 == True:
+            Agent.AMMO1 = True
+            Agent.set1 = False
+        if (self.t - self.reset1)> 8 and self.set2 == True:
+            Agent.AMMO2 = True
+            Agent.set2 = False
+        
         obs = self.observation      
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
@@ -112,7 +122,7 @@ class Agent(object):
             
         if  obs.ammo > 0:
             if (self.AMMO1 == False):
-               # print 'bla '
+                print 'bla '
                 self.goal = self.cps1loc
                 #Agent.AMMO1 = True
                # print'bla2 '
@@ -131,13 +141,7 @@ class Agent(object):
                     self.setGoal(self.ammo2loc)
                 elif self.diffGoal(self.ammo2loc):
                     self.goal = self.ammo1loc
-                    self.setGoal(self.ammo1loc)
-                    
-        #no ammo
-        if (self.t - self.reset1)> 19 :
-            Agent.Ammo1 = True
-        if (self.t - self.reset1)> 19 :
-            Agent.Ammo2 = True
+                    self.setGoal(self.ammo1loc)            
         
         elif  self.diffGoal(self.cps1loc):
                 self.goal = self.cps1loc
@@ -149,21 +153,25 @@ class Agent(object):
                 f.write('obs  '+ str(obs.objects)+ '\n')
                 if len(obs.objects) >0:
                     for c in range (0, len(obs.objects)):
-                        ammopos = obs.objects[c][0] +obs.objects[c][0][1]
+                        ammopos = (obs.objects[c][0], obs.objects[c][1])
                 else:
                     ammopos = (0,0)
                 if ammopos == self.ammo1loc:
                       Agent.AMMO1 = True
                 elif ( self.locToZone(obs.loc) == 4):
                       Agent.AMMO1 = False
-                      Agent.reset1 = self.t
+                      if self.set1 == False:
+                        Agent.set1 = True
+                        Agent.reset1 = self.t
                 if ammopos == self.ammo2loc:
                       Agent.AMMO2 = True
                 elif( self.locToZone(obs.loc) == 5):
                       Agent.AMMO2 = False
-                      Agent.reset2 = self.t
+                      if self.set2 == False:
+                        Agent.set2 = True
+                        Agent.reset2 = self.t
                 f.write(str(ammopos) +'\n')
-                if self.diffGoal(self.ammo1loc):
+                if self.diffGoal(self.ammo1loc) and self.AMMO1 ==True:
                     self.goal = self.ammo1loc
                     self.setGoal(self.ammo1loc)                  
                     f.write('AMMO1 \n')

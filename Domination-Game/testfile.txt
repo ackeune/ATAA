@@ -166,3 +166,879 @@ obs  [(312, 136, 'Ammo')]
 obs  [(312, 136, 'Ammo')]
 obs  [(312, 136, 'Ammo')]
 obs  [(312, 136, 'Ammo')]
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  [(312, 136, 'Ammo')]
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  []
+(0, 0)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO1 
+obs  [(152, 136, 'Ammo')]
+(152, 136)
+AMMO2 
+obs  []
+(0, 0)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO2 
+obs  [(312, 136, 'Ammo')]
+(312, 136)
+AMMO1 
