@@ -179,7 +179,8 @@ class Agent(object):
         elif action == 3:
             self.goal = self.ammo2loc #closest ammo/spawned ammo        
         else:
-            self.goal = (17,17) #just to check bugs
+            self.goal(17,17)
+        #just to check bugs
         #f = open('doaction.txt','a')
         #f.write('doingit' + str(self.goal) + '\n')
         #f.close()
@@ -194,9 +195,9 @@ class Agent(object):
             randomAct = randint(0,len(values)-1)
             cf = randint(0,30)
             if cf==30:
-                value = values[randomAct]
-                action = randomAct
-            else:            
+               value = values[randomAct]
+               action = randomAct
+            if True:#else:            
                 maxVals = []
                 maxVal = None
                 for i in range(0,len(values)):
@@ -289,7 +290,10 @@ class Agent(object):
             ammo = True
         foes = False
         if(len(obs.foes) > 0):
-            foes = True
+            foes = []
+            for i in range (0,len(obs.foes)):
+                foes.append(self.locToZone((obs.foes[i])))
+                            
         state = (self.locToZone(obs.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
         
         
@@ -371,6 +375,11 @@ class Agent(object):
             store any learned variables and write logs/reports.
         """
         if self.score[self.tem] >= self.score[1-self.tem] :
-            pickle.dump(self.blobdict, open('../src/agent_test_blob', 'wb'))
-        pass
+            pass
+        try:
+            pickle.dump(self.blobdict, open('../src/agent_test_blob', 'wb'), pickle.HIGHEST_PROTOCOL)
+    
+        except:
+            print ('error writing file !')
+            
         
