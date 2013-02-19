@@ -1,3 +1,4 @@
+from random import choice
 class Agent(object):
     goal0 = (0,0)
     goal1 = (0,0)
@@ -11,7 +12,9 @@ class Agent(object):
     AMMO2 = True
     set1 = False
     set2 = False
-    
+    Ammo = [ammo1loc, ammo2loc]
+    Ammospawned = [AMMO1, AMMO2]
+            
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
     BOTCAPZONE = 2
@@ -27,11 +30,12 @@ class Agent(object):
     ORANGERIGHTZONE = 12
     GRAYLEFTZONE = 13
     GRAYRIGHTZONE = 14
-    tem = 0
+    camp1loc = (12.5*16 , 4.5*16)
+    camp2loc = (16.5*16, 12.5*16)
     score = (0,0)
-    t = 0
     reset1= 0
     reset2=0
+    prevgoal = ammo1loc
 
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, **kwargs):
         """ Each agent is initialized at the beginning of each game.
@@ -72,7 +76,7 @@ class Agent(object):
             print observation
 
     def diffGoal(self, goal):
-       
+        goal = self.locToZone(goal)
         if(self.id == 0):
             if(self.goal1 == goal or self.goal2 == goal):
                 return False
@@ -88,32 +92,40 @@ class Agent(object):
     
     def setGoal(self, goal):
         if(self.id == 0):
-            Agent.goal0 = goal
+            Agent.goal0 = self.locToZone(goal)
         elif(self.id == 1):
-            Agent.goal1 = goal
+            Agent.goal1 = self.locToZone(goal)
         elif(self.id == 2):
-            Agent.goal2 = goal
+            Agent.goal2 = self.locToZone(goal)
         return
           
     def action(self):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
-        Agent.t+=1
+        obs = self.observation
         #no ammo
-        if (self.t - self.reset1)> 8 and self.set1 == True:
+        if (obs.step - self.reset1)> 8 and self.set1 == True:
             Agent.AMMO1 = True
+            Agent.Ammospawned[0] = True
             Agent.set1 = False
-        if (self.t - self.reset1)> 8 and self.set2 == True:
+        if (obs.step - self.reset1)> 8 and self.set2 == True:
             Agent.AMMO2 = True
+            Agent.Ammospawned[1] = True
             Agent.set2 = False
+        if len(obs.objects) >0:
+            for c in range (0, len(obs.objects)):
+                ammopos = (obs.objects[c][0], obs.objects[c][1])
+        else:
+            ammopos = (0,0)
+
         
-        obs = self.observation      
+              
         cps1 = obs.cps[0]
         cps2 = obs.cps[1]
         # Shoot enemies
         shoot = False
-        f = open('testfile.txt','a')
+
         if (obs.ammo > 0 and 
             obs.foes and 
             point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
@@ -122,6 +134,7 @@ class Agent(object):
             shoot = True
             
         if  obs.ammo > 0:
+<<<<<<< HEAD
             if (self.AMMO1 == False):
                 self.goal = self.cps1loc
                 #Agent.AMMO1 = True
@@ -130,40 +143,56 @@ class Agent(object):
                 self.goal = self.cps2loc
                 self.setGoal(self.cps2loc)
                 #Agent.AMMO2 = True
+=======
+            if (obs.cps[0][2] != self.team):
+               
+                self.goal = self.cps1loc
+                self.setGoal(self.cps1loc)
+                Agent.prevgoal = self.cps1loc
+            elif(obs.cps[1][2] != self.team):
+                
+                self.goal = self.cps2loc
+                self.setGoal(self.cps2loc)
+                Agent.prevgoal = self.cps2loc
+>>>>>>> Upgraded hardcoded bot
             else:
-                if self.goal == self.ammo1loc:
-                    self.goal = self.ammo2loc
-                    self.setGoal(self.ammo2loc)
-                elif self.diffGoal(self.ammo2loc):
-                    self.goal = self.ammo1loc
-                    self.setGoal(self.ammo1loc)            
-        
+                if self.prevgoal != self.camp1loc:
+                    self.goal = self.camp1loc
+                    self.setGoal(self.camp1loc)
+                    Agent.prevgoal = self.camp1loc
+                else:                 
+                    self.goal = self.camp2loc
+                    self.setGoal(self.camp2loc)
+                    Agent.prevgoal = self.camp2loc
+                    
         elif  self.diffGoal(self.cps1loc):
                 self.goal = self.cps1loc
                 self.setGoal(self.cps1loc)
+                Agent.prevgoal = self.cps1loc
         elif self.diffGoal(self.cps2loc):
                 self.goal = self.cps2loc
                 self.setGoal(self.cps2loc)
+                Agent.prevgoal = self.cps2loc
+        #no Ammo
         else:
-                f.write('obs  '+ str(obs.objects)+ '\n')
-                if len(obs.objects) >0:
-                    for c in range (0, len(obs.objects)):
-                        ammopos = (obs.objects[c][0], obs.objects[c][1])
-                else:
-                    ammopos = (0,0)
                 if ammopos == self.ammo1loc:
                       Agent.AMMO1 = True
+                      Agent.Ammospawned[0] = True
                 elif ( self.locToZone(obs.loc) == 4):
                       Agent.AMMO1 = False
+                      Agent.Ammospawned[0] = False
                       if self.set1 == False:
                         Agent.set1 = True
-                        Agent.reset1 = self.t
+                        Agent.reset1 = obs.step
                 if ammopos == self.ammo2loc:
                       Agent.AMMO2 = True
+                      Agent.Ammospawned[1] = True
                 elif( self.locToZone(obs.loc) == 5):
                       Agent.AMMO2 = False
+                      Agent.Ammospawned[1] = False
                       if self.set2 == False:
                         Agent.set2 = True
+<<<<<<< HEAD
                         Agent.reset2 = self.t
                 f.write(str(ammopos) +'\n')
                 if self.diffGoal(self.ammo1loc) and self.AMMO1 ==True:
@@ -174,8 +203,31 @@ class Agent(object):
                     self.goal = self.ammo2loc
                     self.setGoal(self.ammo2loc)
                     f.write('AMMO2 \n')
+=======
+                        Agent.reset2 = obs.step
+                nearestammo = self.closest_ammo(obs.loc)
+                ammochoice = list(self.Ammo)
+                               
+                randomammo = self.Ammo[1]
+                ammochoice.remove(self.Ammo[nearestammo])
+                print ammochoice
+                if self.diffGoal(self.Ammo[nearestammo]) and self.Ammospawned[nearestammo] == True:
+                    self.goal = self.Ammo[nearestammo]
+                    self.setGoal(self.Ammo[nearestammo])                  
+                
+                else:                              
+                    randomammo = choice(ammochoice)
+                    self.goal = randomammo
+                    self.setGoal(randomammo)
+                   
+                    
+                
+                    
+    
+      
+>>>>>>> Upgraded hardcoded bot
         
-        f.close()
+
 
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
@@ -192,6 +244,17 @@ class Agent(object):
                 speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
         
         return (turn,speed,shoot)
+
+    def closest_ammo(self, loc):
+            bestdist = 9999
+            best = 0
+            for i in range (0, len(self.Ammo)):
+                dist = ((loc[0]-self.Ammo[i][0]) ** 2 + (loc[1]-self.Ammo[i][1]) ** 2) ** 0.5
+                if dist < bestdist:
+                    bestdist = dist
+                    best = i
+            return best
+    
 
     def locToZone(self, loc):
         if loc[0] <= 4*16 and loc[1] >= 6*16 and loc[1] <= 11*16: #left spawn
