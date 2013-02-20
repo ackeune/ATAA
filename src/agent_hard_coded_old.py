@@ -142,23 +142,59 @@ class Agent(object):
         cps2 = obs.cps[1]
         # Shoot enemies
         shoot = False
-        #cap closest uncapped point
+
+        if (obs.ammo > 0 and 
+            obs.foes and 
+            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
+            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
+            self.goal = obs.foes[0][0:2]
+            shoot = True
+            
+        if  obs.ammo > 0:
+            #cap uncapped points
+            if (obs.cps[0][2] != self.team):               
+                self.goal = self.cps1loc
+                self.setGoal(self.cps1loc)
+                Agent.prevgoal = self.cps1loc
+            elif(obs.cps[1][2] != self.team):
+                
+                self.goal = self.cps2loc
+                self.setGoal(self.cps2loc)
+                Agent.prevgoal = self.cps2loc
+            #else go camp!
+            else:
+                if self.prevgoal != self.camp1loc:
+                    self.goal = self.camp1loc
+                    self.setGoal(self.camp1loc)
+                    Agent.prevgoal = self.camp1loc
+                else:                 
+                    self.goal = self.camp2loc
+                    self.setGoal(self.camp2loc)
+                    Agent.prevgoal = self.camp2loc
         bestPC = self.closest_UCP(obs.loc, self.team, obs.cps, obs)
-        if bestPC != None and self.diffGoal(bestPC):
-            self.goal = bestPC
-            self.setGoal(bestPC)
-            Agent.prevgoal = bestPC
-        #act on ammo
-        elif (obs.ammo > 0):
-            if self.prevgoal != self.camp1loc:
-                self.goal = self.camp1loc
-                self.setGoal(self.camp1loc)
-                Agent.prevgoal = self.camp1loc
-            else:                 
-                self.goal = self.camp2loc
-                self.setGoal(self.camp2loc)
-                Agent.prevgoal = self.camp2loc
-        #no Ammo points capped or beeing capped
+        if bestPC == None:
+            bestPC = (obs.cps[self.closest_CP(obs.loc, obs.cps)][0], obs.cps[self.closest_CP(obs.loc, obs.cps)][1])
+        nonBestPCList = list(obs.cps)
+        if bestPC[0] == obs.cps[0][0]:
+            vbestPC = bestPC[0],bestPC[1], obs.cps[0][2]
+        else:
+            vbestPC = bestPC[0],bestPC[1], obs.cps[1][2]
+        #print vbestPC
+        nonBestPCList.remove(vbestPC)
+        secondbest = self.closest_UCP(obs.loc, self.team, nonBestPCList, obs)
+        if secondbest == None:
+            secondbest = (obs.cps[self.closest_CP(obs.loc, nonBestPCList)][0], obs.cps[self.closest_CP(obs.loc, nonBestPCList)][1])
+        #print secondbest
+        #print nonBestPCList
+        if self.diffGoal(bestPC):
+                self.goal = bestPC
+                self.setGoal(bestPC)
+                Agent.prevgoal = bestPC
+        elif self.diffGoal(secondbest):
+                self.goal = secondbest
+                self.setGoal(secondbest)
+                Agent.prevgoal = secondbest
+        #no Ammo
         else:
                 nearestammo = self.closest_ammo(obs.loc)
                 ammochoice = list(self.Ammo)
@@ -179,11 +215,10 @@ class Agent(object):
         
                     
     
-       #shoot
+      
        
-        if (obs.ammo > 0 and obs.foes and point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
-            self.goal = obs.foes[0][0:2]
-            shoot = True
+
+
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
