@@ -15,7 +15,7 @@ class Agent(object):
     set2 = False
     Ammo = [ammo1loc, ammo2loc]
     Ammospawned = [AMMO1, AMMO2]
-            
+    CPS =[cps1loc, cps2loc]        
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
     BOTCAPZONE = 2
@@ -33,10 +33,11 @@ class Agent(object):
     GRAYRIGHTZONE = 14
     camp1loc = (12.5*16 , 4.5*16)
     camp2loc = (16.5*16, 12.5*16)
+    camplocs= (camp1loc,camp2loc)
     score = (0,0)
     reset1= 0
     reset2=0
-    
+
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, **kwargs):
         """ Each agent is initialized at the beginning of each game.
             The first agent (id==0) can use this to set up global variables.
@@ -74,13 +75,14 @@ class Agent(object):
             to determine your action. Note that the observation object
             is modified in place.
         """
-       
+        
         self.observation = observation
+        if self.observation.respawn_in  > -1:
+            self.setGoal((0,0))
         self.selected = observation.selected
-
         if observation.selected:
-            #print observation
             pass
+           # print observation
 
     def diffGoal(self, goal):
         goal = self.locToZone(goal)
@@ -104,7 +106,60 @@ class Agent(object):
             Agent.goal1 = self.locToZone(goal)
         elif(self.id == 2):
             Agent.goal2 = self.locToZone(goal)
-        return
+        
+        return goal
+
+    def attack (self, obs):
+        bestPC = self.closest_UCP(self.team, obs)
+        copy = list(self.CPS)
+        if bestPC is not None:
+            copy.remove(bestPC)
+       
+        other = copy[0]
+        
+        if bestPC is not None and self.diffGoal(bestPC):
+            
+            return bestPC
+        elif len(other)== 2 and self.diffGoal(other):
+            return other
+        else:
+            return None
+            
+        
+    def defend (self, obs):
+        if obs.ammo > 0:
+            bestPC = self.closest_CP(obs.loc , self.camplocs)
+            if bestPC is not None and self.diffGoal(self.camplocs[bestPC]):
+                return self.camplocs[bestPC]
+            else:
+                return None
+        else:
+            return None
+    def getAmmo (self, obs):
+        spawnedammo = []
+        for i in range(0, len(self.Ammospawned)):
+            if self.Ammospawned[i] == True:
+                spawnedammo.append(self.Ammo[i])
+        
+        nearestammo = self.closest_ammo(obs.loc, spawnedammo)
+       #print ammochoice
+        if self.diffGoal(self.Ammo[nearestammo]) and self.Ammospawned[nearestammo] == True:
+            return self.Ammo[nearestammo]
+        
+        else:
+            
+            return None
+    def support (self, obs):
+        #see how many foes are in what zone, go there
+        #for now, go to closest point
+        return self.CPS[self.closest_CP(obs.loc , self.CPS)]
+        
+        
+            
+            
+            
+
+           
           
     def action(self):
         """ This function is called every step and should
@@ -123,31 +178,26 @@ class Agent(object):
         if len(obs.objects) >0:
             for c in range (0, len(obs.objects)):
                 ammopos = (obs.objects[c][0], obs.objects[c][1])
-<<<<<<< HEAD
         else:
             ammopos = (0,0)
-=======
-                if ammopos == self.ammo1loc:
-                  Agent.AMMO1 = True
-                  Agent.Ammospawned[0] = True
-                elif ( self.locToZone(obs.loc) == 4):
-                      Agent.AMMO1 = False
-                      Agent.Ammospawned[0] = False
-                      if self.set1 == False:
-                        Agent.set1 = True
-                        Agent.reset1 = obs.step
-                if ammopos == self.ammo2loc:
-                      Agent.AMMO2 = True
-                      Agent.Ammospawned[1] = True
-                elif( self.locToZone(obs.loc) == 5):
-                      Agent.AMMO2 = False
-                      Agent.Ammospawned[1] = False
-                      if self.set2 == False:
-                        Agent.set2 = True
-                        Agent.reset2 = obs.step
-        
-        
->>>>>>> Fixed Versions
+        if ammopos == self.ammo1loc:
+              Agent.AMMO1 = True
+              Agent.Ammospawned[0] = True
+        elif ( self.locToZone(obs.loc) == 4):
+              Agent.AMMO1 = False
+              Agent.Ammospawned[0] = False
+              if self.set1 == False:
+                Agent.set1 = True
+                Agent.reset1 = obs.step
+        if ammopos == self.ammo2loc:
+              Agent.AMMO2 = True
+              Agent.Ammospawned[1] = True
+        elif( self.locToZone(obs.loc) == 5):
+              Agent.AMMO2 = False
+              Agent.Ammospawned[1] = False
+              if self.set2 == False:
+                Agent.set2 = True
+                Agent.reset2 = obs.step
 
         
               
@@ -155,130 +205,39 @@ class Agent(object):
         cps2 = obs.cps[1]
         # Shoot enemies
         shoot = False
-<<<<<<< HEAD
+        a =self.attack(obs)
+        g =self.getAmmo(obs)
+        b =self.defend(obs)
+        s =self.support(obs)
         #cap closest uncapped point
-        bestPC = self.closest_UCP(self.team ,obs,obs.cps)
-        if bestPC != None and self.diffGoal(bestPC):
-            #print self.id, 'THERE IS A POINT NOT OURS! '
-            self.goal = bestPC
-            self.setGoal(bestPC)
-            Agent.prevgoal = bestPC
-        #act on ammo
-        elif (obs.ammo > 0):
-            #print self.id, 'I have ammo'
-            if self.prevgoal != self.camp1loc:
-                self.goal = self.camp1loc
-                self.setGoal(self.camp1loc)
-                
-            else:                 
-                self.goal = self.camp2loc
-                self.setGoal(self.camp2loc)
-                
-        #no Ammo points capped or beeing capped
-=======
-
-        if (obs.ammo > 0 and 
-            obs.foes and 
-            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
-            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
-            self.goal = obs.foes[0][0:2]
-            shoot = True
+        if a is not None:
+            self.goal = self.setGoal(a)
+            print 'CHAAAAAAAAAAARRRRGEEEEE!' , self.id
+        elif b is not None:
+            self.goal = self.setGoal(b)
             
-        if  obs.ammo > 0:
-            if (obs.cps[0][2] != self.team):               
-                self.goal = self.cps1loc
-                self.setGoal(self.cps1loc)
-                Agent.prevgoal = self.cps1loc
-            elif(obs.cps[1][2] != self.team):
-                
-                self.goal = self.cps2loc
-                self.setGoal(self.cps2loc)
-                Agent.prevgoal = self.cps2loc
-            else:
-                if self.prevgoal != self.camp1loc:
-                    self.goal = self.camp1loc
-                    self.setGoal(self.camp1loc)
-                    Agent.prevgoal = self.camp1loc
-                else:                 
-                    self.goal = self.camp2loc
-                    self.setGoal(self.camp2loc)
-                    Agent.prevgoal = self.camp2loc
-                    
-        elif  self.diffGoal(self.cps1loc):
-                self.goal = self.cps1loc
-                self.setGoal(self.cps1loc)
-                Agent.prevgoal = self.cps1loc
-        elif self.diffGoal(self.cps2loc):
-                self.goal = self.cps2loc
-                self.setGoal(self.cps2loc)
-                Agent.prevgoal = self.cps2loc
-        #no Ammo
->>>>>>> parent of b708a54... Fixed
+            print 'DEFENDING FOR THE HOME COUNTRY!' , self.id
+            print 
+        elif g is not None:
+            self.goal = self.setGoal(g)
+            
+            print 'AMMO, AMMO I NEED MORE AMMO!', self.id
         else:
-<<<<<<< HEAD
-                if ammopos == self.ammo1loc:
-                      Agent.AMMO1 = True
-                      Agent.Ammospawned[0] = True
-                elif ( self.locToZone(obs.loc) == 4):
-                      Agent.AMMO1 = False
-                      Agent.Ammospawned[0] = False
-                      if self.set1 == False:
-                        Agent.set1 = True
-                        Agent.reset1 = obs.step
-                if ammopos == self.ammo2loc:
-                      Agent.AMMO2 = True
-                      Agent.Ammospawned[1] = True
-                elif( self.locToZone(obs.loc) == 5):
-                      Agent.AMMO2 = False
-                      Agent.Ammospawned[1] = False
-                      if self.set2 == False:
-                        Agent.set2 = True
-                        Agent.reset2 = obs.step
-                nearestammo = self.closest_ammo(obs.loc)
-                ammochoice = list(self.Ammo)
-                               
-                randomammo = self.Ammo[1]
-                ammochoice.remove(self.Ammo[nearestammo])
-                print ammochoice
-=======
-                #print self.id, 'I dont have any ammo and somone is already capping the points '
-                nearestammo = self.closest_ammo(obs.loc)
-                
-                otherammo = 1-nearestammo
-               #print ammochoice
->>>>>>> Fixed Versions
-                if self.diffGoal(self.Ammo[nearestammo]) and self.Ammospawned[nearestammo] == True:
-                    self.goal = self.Ammo[nearestammo]
-                    self.setGoal(self.Ammo[nearestammo])
-                    
-                
-                elif self.diffGoal(self.Ammo[otherammo]) and self.Ammo[otherammo] == True:                            
-                    self.goal = self.Ammo[otherammo]
-                    self.setGoal(self.Ammo[otherammo])
-                    
-                else:
-                    print'no ammo spawned!'
-                    self.goal = (self.Ammo[choice([0,1])])
+            self.goal = s
+            
+            
+            
+            
         
                     
-                
+        
                     
     
-<<<<<<< HEAD
        #shoot
-        if obs.respawn_in > -1:
-            print 'me ded'
-            self.setGoal((0,0))
-            goal = ((17,17))
+       
         if (obs.ammo > 0 and obs.foes and point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
             self.goal = obs.foes[0][0:2]
             shoot = True
-=======
-      
-        
-
-
->>>>>>> parent of b708a54... Fixed
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
@@ -289,28 +248,31 @@ class Agent(object):
         if abs(turn) > self.settings.max_turn:
             speed = 0
             self.shoot = False
-<<<<<<< HEAD
-            speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
-
-=======
             
         
->>>>>>> Fixed Versions
         
         
         return (turn,speed,shoot)
 
-    def closest_ammo(self, loc):
+    def closest_to_point(self, point):
+        best_dist = 1000
+        best_id = None
+        for agent in self.all_agents:
+            dist = real_dist(agent.loc[:2], point[:2])
+            if dist < best_dist:
+                dist = best_dist
+                best_id = agent.id
+        return best_id
+
+    def closest_ammo(self, loc, Ammo):
             bestdist = 9999
             best = 0
-            for i in range (0, len(self.Ammo)):
-                dist = ((loc[0]-self.Ammo[i][0]) ** 2 + (loc[1]-self.Ammo[i][1]) ** 2) ** 0.5
+            for i in range (0, len(Ammo)):
+                dist = ((loc[0]-Ammo[i][0]) ** 2 + (loc[1]-Ammo[i][1]) ** 2) ** 0.5
                 if dist < bestdist:
                     bestdist = dist
                     best = i
             return best
-<<<<<<< HEAD
-=======
         
     def closest_CP(self, loc, CPS):
         bestdist = 9999
@@ -323,20 +285,21 @@ class Agent(object):
         if (len(CPS) == 1):
             return 0
         return best
+
+    
         
-    def closest_UCP (self,  team, obs, CPS):
-        closestcp = self.closest_CP(obs.loc, CPS)
-        if obs.cps[closestcp][2] != team and self.diffGoal(obs.cps[closestcp][:2]) :
-            return (obs.cps[closestcp][:2]) 
-        elif (len(CPS) > 1):
-            newCPS = list(CPS)
-            newCPS.remove(CPS[closestcp])
+    def closest_UCP (self, team,  obs):
+        closestcp = self.closest_CP(obs.loc, obs.cps)
+        if obs.cps[closestcp][2] != team:
+            return (obs.cps[closestcp][0],obs.cps[closestcp][1]) 
+        elif (len(obs.cps) > 1):
+            newCPS = list(obs.cps)
+            newCPS.remove(obs.cps[closestcp])
             self.closest_CP(obs.loc,  newCPS)
         
        
         
         
->>>>>>> Fixed Versions
     
 
     def locToZone(self, loc):

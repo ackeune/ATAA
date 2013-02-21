@@ -35,4 +35,4 @@ class Tournament1(run.Scenario):
 
 
 #Tournament1.one_on_one(red="../src/agent_test.py", blue="../src/agent_hard_coded.py", output_folder='_tmp')
-Tournament1.test(red="../src/ataack1.py", blue="../src/agent_hard_coded.py")
+Tournament1.test(red="../src/agent_hard_coded.py", blue="../src/ataackv3.py")

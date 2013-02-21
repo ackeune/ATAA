@@ -1,0 +1,8 @@
+S = [AMMO, [CPS1, CPS2], [AMMO1,AMMO2]]
+O = [ORDER1, ORDER2, ORDER3]
+D = [ [CPD1, CPD2,CPD3], [AD1,AD2,AD3]]
+
+action = for state[1][n] == !team:
+	if state[1][n] is not in orders
+	then min D[1] 
+	if id == mind[1] then go!
