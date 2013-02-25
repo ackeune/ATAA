@@ -266,6 +266,7 @@ class Agent(object):
                 elif self.orders[self.id] == None:
                     print 'did  not receive any new goal'
                     #print obs.cps[self.closest_CP(obs.loc,obs.cps)]
+                    print self.closest_CP(obs.loc,obs.cps)
                     self.goal = obs.cps[self.closest_CP(obs.loc,obs.cps)][:2]
                             
                             
@@ -288,6 +289,9 @@ class Agent(object):
             not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
             self.goal = obs.foes[0][0:2]
             shoot = True
+            for friendly in obs.friends:
+                if line_intersects_circ(obs.loc, obs.foes[0][0:2], friendly, 8):
+                    shoot = False
             
 
         # Compute path, angle and drive
@@ -301,6 +305,7 @@ class Agent(object):
             speed = 0
             self.shoot = False
             speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
+        
         
 
         
