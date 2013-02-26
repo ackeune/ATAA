@@ -32,8 +32,6 @@ class Agent(object):
     ammo1loc = (152, 136)
     ammo2loc = (312, 136)
     ammoloc = [ammo1loc, ammo2loc]
-
-    # state  = wie ammo heeft; locaties cps + wie ze heeft; ammospawn1, ammospawn2, allyLocs; enemyLocs (als ie ze ziet)
     state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True), allyLocs, enemyLocs]
     NAME = "default_agent"
     

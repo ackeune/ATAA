@@ -34,6 +34,6 @@ class Tournament1(run.Scenario):
                               max_score=100)
 
 
-Tournament1.one_on_one(red="../src/agent_test.py", blue="../src/agent_hard_coded.py", output_folder='_tmp')
+#Tournament1.one_on_one(red="../src/agent_test.py", blue="../src/agent_hard_coded.py", output_folder='_tmp')
 #Tournament1.test(red="../src/agent_hard_coded_v3.py", blue="../src/agent_hard_coded_v2.py")
-#Tournament1.test(red="../src/agent_test.py", blue="../src/agent_test.py")
+Tournament1.test(red="../src/agent_test.py", blue="../src/agent_test.py")
