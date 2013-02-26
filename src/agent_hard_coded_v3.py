@@ -19,14 +19,14 @@ class Agent(object):
     set1 = False
     set2 = False
     reset1 = 0
-    reset1 = 0
+    reset2 = 0
     
     
     ammo = [False, False, False]
     #TODO: locs of all agents, set orders to closest agents.
     #TODO: locs of all enemies, to see if ur closer to ammo.
     orders = [None, None, None]
-    allyLocs = None, None, None
+    allyLocs = [None, None, None]
     enemyLocs = [None, None, None]
     distance = [(1000,1000,1000), (1000,1000,1000)]
     ammo1loc = (152, 136)
@@ -191,10 +191,23 @@ class Agent(object):
         self.selected = observation.selected
 
         #Set global location variable
-        Agent.state[3][self.id] = observation.loc
+        Agent.state[3][self.id] = (observation.loc, observation.angle)
 
-        #Set visible enemy locations #TODO: keep track of enemy to predict movement/strategy 
+        #Set visible enemy locations #TODO: keep track of enemy to predict movement/strategy
+        if self.id == 0:
+            Agent.state[4] = [None, None,None]
         if observation.foes:
+       
+            for foe in observation.foes:
+                if  foe not in self.state[4]: 
+                   for n in range(0, len(Agent.state[4])):
+                       if self.state[4][n] == None:
+                            Agent.state[4][n] =foe
+                            break
+                    
+
+         
+                
             
         
         # we are ded! 
@@ -295,8 +308,7 @@ class Agent(object):
                     #if enemy is closer, leave it
 
                     #if 
-                
-                    if 
+
                     self.goal = None
                     Agent.orders[self.id] = None
             if self.orders[self.id] == None:
