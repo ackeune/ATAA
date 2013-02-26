@@ -23,12 +23,16 @@ class Agent(object):
     
     
     ammo = [False, False, False]
+    #TODO: locs of all agents, set orders to closest agents.
+    #TODO: locs of all enemies, to see if ur closer to ammo.
     orders = [None, None, None]
+    allyLocs = None, None, None
+    enemyLocs = [None, None, None]
     distance = [(1000,1000,1000), (1000,1000,1000)]
     ammo1loc = (152, 136)
     ammo2loc = (312, 136)
     ammoloc = [ammo1loc, ammo2loc]
-    state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True)]
+    state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True), allyLocs, enemyLocs]
     NAME = "default_agent"
     
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, **kwargs):
@@ -185,18 +189,24 @@ class Agent(object):
         """
         self.observation = observation
         self.selected = observation.selected
+
+        #Set global location variable
+        Agent.state[3][self.id] = observation.loc
+
+        #Set visible enemy locations #TODO: keep track of enemy to predict movement/strategy 
+        if observation.foes:
+            
+        
         # we are ded! 
         if observation.respawn_in > 0:
             Agent.orders[self.id] = None
-            
-        #update ammo status
+        
+        #update ammo status 
         if (observation.step - self.reset1)> 8 and self.set1 == True:
             Agent.state[2] = (True, Agent.state[2][1])
-            Agent.set1 = False
-        if (observation.step - self.reset1)> 8 and self.set2 == True:
+        if (observation.step - self.reset2)> 8 and self.set2 == True:
             Agent.state[2] =(Agent.state[2][0], True)
-            Agent.set2 = False
-
+        
         ammopacks = filter(lambda x: x[2] == "Ammo", observation.objects)
         #Update ammo State
         if observation.ammo > 0:
@@ -206,17 +216,21 @@ class Agent(object):
         if ammopacks:
             if ammopacks[0][0:2] == self.ammo1loc:
                 Agent.state[2] = (True, Agent.state[2][1])
+                Agent.set1 = False
             if ammopacks[0][0:2] == self.ammo2loc:
                 Agent.state[2] =(Agent.state[2][0], True)
+                Agent.set2 = False
         else:
             if self.inVisionRange(observation.loc, self.ammo1loc):
                 Agent.state[2] = (False, Agent.state[2][1])
-                Agent.set1 = True
-                Agent.reset1 = observation.step
+                if self.set1 == False:
+                    Agent.set1 = True
+                    Agent.reset1 = observation.step
             if self.inVisionRange(observation.loc, self.ammo2loc):
                 Agent.state[2] =(Agent.state[2][0], False)
-                Agent.set2 = True
-                Agent.reset2 = observation.step
+                if self.set2 == False:
+                    Agent.set2 = True
+                    Agent.reset2 = observation.step
             '''if observation.loc == self.ammo1loc: 
                     Agent.state[2] = (False, Agent.state[2][1])
             if observation.loc == self.ammo2loc:
@@ -260,7 +274,7 @@ class Agent(object):
                 #print 'state', self.state[2][a]
                 if self.state[2][a] == True and self.ammoloc[a] not in self.orders:
                     spawnammo.append(self.ammoloc[a])
-            if self.goal is not None  and point_dist(self.goal, obs.loc) < self.settings.tilesize:
+            if self.goal is not None  and point_dist(self.goal, obs.loc) < self.settings.tilesize: 
                 self.goal = None
                 Agent.orders[self.id] = None
                 
@@ -271,6 +285,20 @@ class Agent(object):
             print self.orders[self.id]
             #print 'made it'   
             #print len(self.state[1])
+            if self.orders[self.id] in self.ammoloc:
+                if self.orders[self.id] not in spawnammo:# got a goal of ammo that is not there.
+                    self.goal = None
+                    Agent.orders[self.id] = None
+                else:
+                    
+                
+                    #if enemy is closer, leave it
+
+                    #if 
+                
+                    if 
+                    self.goal = None
+                    Agent.orders[self.id] = None
             if self.orders[self.id] == None:
                 for n in range (0, len(self.state[1])):
                     #print'got here'
@@ -301,7 +329,7 @@ class Agent(object):
                         self.goal = tgoal
                         Agent.orders[self.id] = tgoal
                     if(self.orders[self.id] == None):
-                        self.goal = obs.cps[self.closest_CP(obs.loc, obs.cps)][:2] #CLOSEST MIGHT NOT BE CLOSE IF THERE ARE WALLLSSSS
+                        self.goal = obs.cps[self.closest_CP(obs.loc, obs.cps)][:2] #TODO: CLOSEST MIGHT NOT BE CLOSE IF THERE ARE WALLLSSSS
                         Agent.orders[self.id] = self.goal
                 # we know some ammo has spawned            
                 elif self.goal ==None and len(spawnammo) > 0  :
@@ -317,7 +345,6 @@ class Agent(object):
                     print 'Nothing new to do stay on point'
                     self.goal = obs.cps[self.closest_CP(obs.loc,obs.cps)][:2]
                     print self.goal
-                            
                             
         else:
             self.goal = obs.loc
