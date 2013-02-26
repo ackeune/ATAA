@@ -1,4 +1,4 @@
-
+import math
 class Agent(object):
     LEFTSPAWN = 0
     RIGHTSPAWN = 1
@@ -25,8 +25,8 @@ class Agent(object):
     ammo = [False, False, False]
     orders = [None, None, None]
     distance = [(1000,1000,1000), (1000,1000,1000)]
-    ammo1loc = (9.5*16, 8.5*16)
-    ammo2loc = (19.5*16, 8.5*16)
+    ammo1loc = (152, 136)
+    ammo2loc = (312, 136)
     ammoloc = [ammo1loc, ammo2loc]
     state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True)]
     NAME = "default_agent"
@@ -101,25 +101,29 @@ class Agent(object):
             return -1
 
     def closest_CP(self, loc, CPS):
+        print loc
+        print CPS
         bestdist = 9999
         best = 0
-        for i in range (0, len(CPS)-1):
+        for i in range (0, len(CPS)):
             dist = ((loc[0]-CPS[i][0]) ** 2 + (loc[1]-CPS[i][1]) ** 2) ** 0.5
             if dist < bestdist:
                 bestdist = dist
                 best = i
         if (len(CPS) == 1):
+            print 'only 1 cps lol?'
             return 0
+        print best
         return best
     
     def closest_UCP (self, team,  loc, cps):
         closestcp = self.closest_CP(loc,cps)
-        print'==========='
-        print len(cps)
-        print closestcp
-        print cps[closestcp]
-        print team
-        print '===='
+        #print'==========='
+        #print len(cps)
+        #print closestcp
+        #print cps[closestcp]
+        #print team
+        #print '===='
         if cps[closestcp][2] != team:
             #fix dis
             return (cps[closestcp][:2]) 
@@ -128,7 +132,33 @@ class Agent(object):
             newCPS.remove(cps[closestcp])
             self.closest_UCP(team,  loc, newCPS)
             
-            
+    def reducedSpeed(self, startTurn, diffy, diffx, speed):
+        maxSpeed = self.settings.max_speed
+        turn = self.settings.max_turn
+        tempspeed = maxSpeed
+        #move in y direction while rotating if turned to +y only
+        if(diffy > 0 and diffy < maxSpeed and startTurn+turn < 0 and startTurn+turn > -math.pi):
+                tempspeed = diffy/math.sin(startTurn + turn)
+                if(tempspeed < speed):
+                        speed = tempspeed
+        elif(diffy < 0 and -diffy < maxSpeed and startTurn+turn > 0):
+                tempspeed = diffy/math.sin(startTurn + turn)
+                if(tempspeed < speed):
+                        speed = tempspeed
+        #move in x direction while rotatingif turned to +x only
+        if(diffx > 0 and diffx < maxSpeed and startTurn+turn > -math.pi/2 and startTurn+turn < math.pi/2):
+                tempspeed = diffx/math.cos(startTurn+turn)
+                if(tempspeed < speed):
+                        speed = tempspeed
+        elif(diffx < 0 and -diffx < maxSpeed and startTurn+turn < -math.pi/2 or startTurn+turn > math.pi/2):
+                tempspeed = diffx/math.cos(startTurn+turn)
+                if(tempspeed < speed):
+                        speed = tempspeed
+        if(tempspeed == maxSpeed):
+                speed = 0
+        if( speed < maxSpeed):
+                speed = 0
+        return speed
             
     def closest_ammo(self, loc, Ammo):
             bestdist = 9999
@@ -138,8 +168,14 @@ class Agent(object):
                 if dist < bestdist:
                     bestdist = dist
                     best = i
-            return self.ammoloc[best]
-    
+            return Ammo[best]
+        
+    def inVisionRange(self, loc1, loc2):
+        if(point_dist(loc1, loc2) <= self.settings.max_see):
+            return True
+        else:
+            return False
+        
     def observe(self, observation):
         """ Each agent is passed an observation using this function,
             before being asked for an action. You can store either
@@ -172,20 +208,29 @@ class Agent(object):
                 Agent.state[2] = (True, Agent.state[2][1])
             if ammopacks[0][0:2] == self.ammo2loc:
                 Agent.state[2] =(Agent.state[2][0], True)
-        if observation.loc == self.ammo1loc:
+        else:
+            if self.inVisionRange(observation.loc, self.ammo1loc):
                 Agent.state[2] = (False, Agent.state[2][1])
-        if observation.loc == self.ammo2loc:
-                Agent.state[2] =(Agent.state[2][0], False)
-        elif( self.locToZone(observation.loc) == 4):            
-              Agent.state[2] = (False, Agent.state[2][1])
-              if self.set1 == False:
                 Agent.set1 = True
                 Agent.reset1 = observation.step
-        elif( self.locToZone(observation.loc) == 5):
-              Agent.state[2] =(Agent.state[2][0], False)
-              if self.set2 == False:
+            if self.inVisionRange(observation.loc, self.ammo2loc):
+                Agent.state[2] =(Agent.state[2][0], False)
                 Agent.set2 = True
                 Agent.reset2 = observation.step
+            '''if observation.loc == self.ammo1loc: 
+                    Agent.state[2] = (False, Agent.state[2][1])
+            if observation.loc == self.ammo2loc:
+                    Agent.state[2] =(Agent.state[2][0], False)
+            elif( self.locToZone(observation.loc) == 4):     #only if no ammo seen       
+                  Agent.state[2] = (False, Agent.state[2][1])
+                  if self.set1 == False:
+                    Agent.set1 = True
+                    Agent.reset1 = observation.step
+            elif( self.locToZone(observation.loc) == 5):    #only if no ammo seen
+                  Agent.state[2] =(Agent.state[2][0], False)
+                  if self.set2 == False:
+                    Agent.set2 = True
+                    Agent.reset2 = observation.step'''
 
         #update CPS state
         Agent.state[1] =(observation.cps)
@@ -212,7 +257,7 @@ class Agent(object):
         spawnammo =[]
         if obs.respawn_in < 1:            
             for a in range (0, len(self.state[2])):
-                print 'state', self.state[2][a]
+                #print 'state', self.state[2][a]
                 if self.state[2][a] == True and self.ammoloc[a] not in self.orders:
                     spawnammo.append(self.ammoloc[a])
             if self.goal is not None  and point_dist(self.goal, obs.loc) < self.settings.tilesize:
@@ -222,18 +267,20 @@ class Agent(object):
             #cap uncapped points
             #cap spawned ammo
             print (self.id)
+            print self.state
+            print self.orders[self.id]
             #print 'made it'   
             #print len(self.state[1])
             if self.orders[self.id] == None:
                 for n in range (0, len(self.state[1])):
-                    print'got here'
-                    print n
+                    #print'got here'
+                    #print n
                     if self.state[1][n][2] != self.team and self.state[1][n][:2] not in self.orders:
-                        print self.orders
-                        print self.state[1][n][:2] not in self.orders
-                        print'going to cap'
-                        print self.id
-                        print self.state[1][n][:2]
+                        #print self.orders
+                        #print self.state[1][n][:2] not in self.orders
+                        print'Going to cap'
+                        #print self.id
+                        #print self.state
                         self.goal = self.state[1][n][:2]
                         Agent.orders[self.id] = self.state[1][n][:2]
                         break
@@ -244,45 +291,50 @@ class Agent(object):
                     for n in range (0, len(self.state[1])):
                         if self.state[1][n][2] != self.team and self.state[1][n][:2] :
                             ucp.append(self.state[1][n])
-                            print self.state[1][n]
-                            print 'uncapped point located'
-                    print type (ucp )
-                    
+                           # print self.state[1][n]
+                           #print 'uncapped point located'
+                    #print type (ucp )
+                    print 'got ammo trying to find a CP'
                     if ucp:
                         tgoal = self.closest_UCP (self.team,  obs.loc, ucp) # can return Noone ?! 
-                        print 'tgoal',tgoal
+                        #print 'tgoal',tgoal
                         self.goal = tgoal
                         Agent.orders[self.id] = tgoal
                     if(self.orders[self.id] == None):
-                        self.goal = obs.cps[self.closest_CP(obs.loc, obs.cps)][:2]
+                        self.goal = obs.cps[self.closest_CP(obs.loc, obs.cps)][:2] #CLOSEST MIGHT NOT BE CLOSE IF THERE ARE WALLLSSSS
                         Agent.orders[self.id] = self.goal
                 # we know some ammo has spawned            
-                elif True in self.state[2] and self.goal ==None and len(spawnammo) > 1  :
-                    print 'there be some ammow here!'           
+                elif self.goal ==None and len(spawnammo) > 0  :
+                    print 'Getting ammo'
+                    print spawnammo
                     self.goal = self.closest_ammo(obs.loc, spawnammo)
                     Agent.orders[self.id] = self.goal
                     #print 'woops'
                     
                 elif self.orders[self.id] == None:
-                    print 'did  not receive any new goal'
                     #print obs.cps[self.closest_CP(obs.loc,obs.cps)]
-                    print self.closest_CP(obs.loc,obs.cps)
+                    #print self.closest_CP(obs.loc,obs.cps)
+                    print 'Nothing new to do stay on point'
                     self.goal = obs.cps[self.closest_CP(obs.loc,obs.cps)][:2]
+                    print self.goal
                             
                             
         else:
-            self.goal = obs.loc                   
+            self.goal = obs.loc
+            print 'IM DEAD :('
                         
-        print self.goal           
+        #print self.goal           
                         
                     
         # Drive to where the user clicked
         # Clicked is a list of tuples of (x, y, shift_down, is_selected)
         
-       
+        print self.orders
         
         # Shoot enemies
         shoot = False
+        turn = 0
+        speed = 0
         if (obs.ammo > 0 and 
             obs.foes and 
             point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
@@ -301,10 +353,11 @@ class Agent(object):
             dy = path[0][1] - obs.loc[1]               
             speed = ( dx ** 2 + dy ** 2 ) ** 0.5         
             turn = angle_fix( math.atan2(dy, dx) - obs.angle )
-        if abs(turn) > self.settings.max_turn:
-            speed = 0
-            self.shoot = False
-            speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
+            if abs(turn) > self.settings.max_turn:
+                startTurn = obs.angle
+                speed = self.reducedSpeed(startTurn, dy, dx, speed)
+                self.shoot = False
+            #speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
         
         
 
