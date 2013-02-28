@@ -136,6 +136,33 @@ class Agent(object):
             newCPS.remove(cps[closestcp])
             self.closest_UCP(team,  loc, newCPS)
             
+    def calcPathTime(self, path, curTurn, curLoc):
+        time = 0
+        for subGoal in path: #for each subGoal               
+            while curLoc != subGoal: #calc moves untill reached 
+                dx = subGoal[0] - curLoc[0]
+                dy = subGoal[1] - curLoc[1]               
+                speed = ( dx ** 2 + dy ** 2 ) ** 0.5
+                if speed < self.settings.tilesize: #goal reached
+                    break
+                if speed > self.settings.max_speed: #cant go faster than allowed :(
+                    speed = self.settings.max_speed
+                turn = angle_fix( math.atan2(dy, dx) - curTurn )
+                if abs(turn) > self.settings.max_turn: #cant turn more than allowed :(
+                    turn = self.settings.max_turn*turn/math.fabs(turn)
+                    speed = self.reducedSpeed(curTurn, dy, dx, speed) #modify speed
+                curTurn = curTurn + turn
+                if curTurn >= math.pi: #fix of angles
+                    curTurn -= -2*math.pi
+                elif curTurn < -math.pi: #fix of angles
+                    curTurn += 2*math.pi
+                #update new location
+                curLoc0 = round(curLoc[0] + math.cos(curTurn)*speed)
+                curLoc1 = round(curLoc[1] + math.sin(curTurn)*speed)
+                curLoc = (curLoc0, curLoc1)
+                time += 1
+        return time
+    
     def reducedSpeed(self, startTurn, diffy, diffx, speed):
         maxSpeed = self.settings.max_speed
         turn = self.settings.max_turn
