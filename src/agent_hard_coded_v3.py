@@ -23,8 +23,6 @@ class Agent(object):
     
     
     ammo = [False, False, False]
-    #TODO: locs of all agents, set orders to closest agents.
-    #TODO: locs of all enemies, to see if ur closer to ammo.
     orders = [None, None, None]
     allyLocs = [None, None, None]
     enemyLocs = [None, None, None]
