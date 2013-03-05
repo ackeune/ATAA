@@ -324,9 +324,9 @@ class Agent(object):
             foes.append(agent.observation.foes)
         for point in self.state[1]:
             if point[2] != self.team and point[:2] not in self.orders:
-                closestId = getClosest(agents, None, point[:2])
+                closestId = self.getClosest(agents, None, point[:2])
                 Agent.orders[closestId] = point[:2]
-                agents.remove(getAgent(agents, closestId))
+                agents.remove(self.getAgent(agents, closestId))
               
     def action(self):
         """ This function is called every step and should

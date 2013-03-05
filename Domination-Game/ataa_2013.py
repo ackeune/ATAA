@@ -83,7 +83,7 @@ class Tournament2(scenarios.Scenario):
 if __name__ == '__main__':
     # TODO: use argparse to set rendered true/false
     if len(sys.argv) == 1:
-        Tournament2.test(red="../src/agent_test_avb.py", blue="domination/agent.py")
+        Tournament2.test(red="../src/agent_hard_coded_v3.py", blue="domination/agent.py")
     else:
         now = datetime.datetime.now()
         folder = os.path.join('tournaments', now.strftime("%Y%m%d-%H%M"))
