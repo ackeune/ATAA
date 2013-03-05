@@ -458,6 +458,10 @@ class Agent(object):
             if self.goal is not None:
                 pygame.draw.line(surface,(0,0,0),self.observation.loc, self.goal)
         
+            if self.observation.ammo > 0:
+                (loc_x, loc_y) = self.observation.loc
+                pygame.draw.rect(surface, (255,0,0), (loc_x, loc_y, 10, 10), 2)
+        
     def finalize(self, interrupted=False):
         """ This function is called after the game ends, 
             either due to time/score limits, or due to an
