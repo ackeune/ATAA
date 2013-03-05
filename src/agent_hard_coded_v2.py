@@ -212,16 +212,16 @@ class Agent(object):
         #cap closest uncapped point
         if a is not None:
             self.goal = self.setGoal(a)
-            print 'CHAAAAAAAAAAARRRRGEEEEE!' , self.id
+            #print 'CHAAAAAAAAAAARRRRGEEEEE!' , self.id
         elif b is not None:
             self.goal = self.setGoal(b)
             
-            print 'DEFENDING FOR THE HOME COUNTRY!' , self.id
-            print 
+            #print 'DEFENDING FOR THE HOME COUNTRY!' , self.id
+            #print 
         elif g is not None:
             self.goal = self.setGoal(g)
             
-            print 'AMMO, AMMO I NEED MORE AMMO!', self.id
+            #print 'AMMO, AMMO I NEED MORE AMMO!', self.id
         else:
             self.goal = s
             

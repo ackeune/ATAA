@@ -352,21 +352,21 @@ class Agent(object):
 
         if self.goal == None:
             self.goal = obs.loc
-
-        # Shoot
+            
         shoot = False
-        turn = 0
-        speed = 0
-        if (obs.ammo > 0 and 
-            obs.foes and 
-            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
-            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
+        #### Shoot Enemy
+        # If you have ammo, an enemy is in range and no friendly fire
+        targets = self.find_targets()
+        if targets and obs.ammo > 0:
             self.goal = obs.foes[0][0:2]
             shoot = True
-            for friendly in obs.friends:
-                if line_intersects_circ(obs.loc, obs.foes[0][0:2], friendly, 8):
-                    shoot = False            
-
+            speed = 0
+            turn = targets[0]
+            print 'turn to shoot: ' , turn
+            print 'FIIIIIIIIIIIRE!!!!'
+            return (turn, speed, shoot)
+        
+        #### No Enemy
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
@@ -378,8 +378,68 @@ class Agent(object):
                 startTurn = obs.angle
                 speed = self.reducedSpeed(startTurn, dy, dx, speed)
                 self.shoot = False
-                
+            #speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
+        
         return (turn,speed,shoot)
+
+        
+    def find_targets(self):
+        shoot = True #will be set to false if it is not allowed to shoot
+        obs = self.observation
+        loc = obs.loc
+        targets = [] #angle to target foes
+        max_turn = self.settings.max_turn
+        max_range = self.settings.max_range
+        radius = 8
+        grid = self.grid
+        tilesize = self.settings.tilesize
+        
+        #find foes: in shooting range and in turn range
+        foes_in_range = []
+        for foe in obs.foes:
+            #calculate distance to foe
+            dist_foe = point_dist(loc, foe[:2])
+            #calculate angle to foe
+            (loc_x, loc_y) = loc
+            (foe_x, foe_y) = foe[:2]
+            angle = math.atan2(foe_y-loc_y, foe_x-loc_x) - obs.angle
+            angle_foe = angle_fix(angle)
+            
+            if dist_foe < max_range and angle_foe < max_turn:
+                foes_in_range.append(foe)
+                targets.append(angle_foe)
+                #print 'added foe in range at point: ' , foe[:2]
+        
+        #if foes_in_range:
+        #    print 'foes in range: ', foes_in_range
+        
+        #no foes in range or no ammo, return empty targets
+        if not foes_in_range or obs.ammo == 0:
+            shoot = False
+            #print 'no foes in range or no ammo'
+            return targets
+        
+        #don't shoot if a friend is in the way
+        for friendly in obs.friends:
+            if line_intersects_circ(loc, obs.foes[0][0:2], friendly, radius):
+                shoot = False
+                print 'Warning: friendly fire'
+                
+        #don't shoot if there is a wall in front of the enemy
+        if line_intersects_grid(loc, obs.foes[0][0:2], self.grid, self.settings.tilesize):
+            shoot = False
+            print 'wall in front of enemy'
+        
+        if shoot == True:
+            print 'CHARGING!'
+            print 'Targets: ', targets
+            print 'angle self: ', obs.angle
+            print 'location self: ', obs.loc
+            print 'location foe: ', foes_in_range[0]
+            return targets
+        else:
+            return [] #not allowed to shoot, so return no targets
+
         
     def debug(self, surface):
         """ Allows the agents to draw on the game UI,
@@ -405,4 +465,3 @@ class Agent(object):
             store any learned variables and write logs/reports.
         """
         pass
-        
