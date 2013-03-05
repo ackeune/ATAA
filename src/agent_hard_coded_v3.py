@@ -27,10 +27,13 @@ class Agent(object):
     allyLocs = [None, None, None]
     enemyLocs = [None, None, None]
     distance = [(1000,1000,1000), (1000,1000,1000)]
-    ammo1loc = (152, 136)
-    ammo2loc = (312, 136)
+    ammo1loc = (184, 168)
+    ammo2loc = (312, 104)
     ammoloc = [ammo1loc, ammo2loc]
-
+    cps1loc = (216, 56)
+    cps2loc = (248, 216)
+    cpslocs = [cps1loc, cps2loc]
+    
     # state  = wie ammo heeft; locaties cps + wie ze heeft; ammospawn1, ammospawn2, allyLocs; enemyLocs (als ie ze ziet)
     state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True), allyLocs, enemyLocs]
     NAME = "default_agent"
@@ -191,16 +194,24 @@ class Agent(object):
                 speed = 0
         return speed
             
-    def closest_ammo(self, loc, Ammo):
-            bestdist = 9999
-            best = 0
-            for i in range (0, len(Ammo)):
-                dist = ((loc[0]-Ammo[i][0]) ** 2 + (loc[1]-Ammo[i][1]) ** 2) ** 0.5
-                if dist < bestdist:
-                    bestdist = dist
-                    best = i
-            return Ammo[best]
+    def getClosestPoint(self, agent, points):
+        '''
+        agent: agent
+        points: [(x,y),...]
+
+        return: [time,...]
+        '''
+        times = []
+        bestLength = 9999999
+        for point in points:
+            obs = agent.observation
+            path = find_path(obs.loc, point, self.mesh, self.grid, self.settings.tilesize)
+            if path:
+                time = self.calcPathTime(path, obs.angle, obs.loc)
+                times.append(time)
+        return times
         
+    
     def inVisionRange(self, loc1, loc2):
         if(point_dist(loc1, loc2) <= self.settings.max_see):
             return True
@@ -285,8 +296,8 @@ class Agent(object):
         for agent in agents:
             closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), (agent.observation.loc, agent.observation.angle),  goal )
             if closest == 1:
-                closestAgent = agent
-        if foes:
+                closestAgent = agent    
+        if foes and len(foes) > 0:
             for foe in foes:
                 closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), foe, goal)
                 if closest == 1:
@@ -316,17 +327,94 @@ class Agent(object):
         for agent in agents:
             if agent.id == aId:
                 return agent
+
+    def getAliveAgents(self, agents):
+        aliveAgents = []
+        for agent in agents:
+            if agent.observation.respawn_in < 1:
+                aliveAgents.append(agent)
+        return aliveAgents
+
     
     def plan(self, spawnammo):
         agents = list(self.all_agents)
-        foes = []
-        for agent in agents:
-            foes.append(agent.observation.foes)
+        agents = self.getAliveAgents(agents)
+        #check if there are agents to plan for
+        if len(agents) > 0:
+            #find all visible foes
+            foes = []
+            for agent in agents:
+                for foe in agent.observation.foes:
+                    foes.append(((foe[0], foe[1]), foe[2]))
+            print ('PLANNING!! for alive agents: ', len(agents))
+            print ('Curorders: ', self.orders)
+
+            #FIRST:
+            #assign uncapped CPS to agents
+            agents = self.assignCapCPS(agents)
+            #SECOND:
+            #guard CPS with ammo
+            agents = self.assignGuardCPSAmmo(agents)
+            #Third
+            #assign getAmmo
+            agents = self.assignGetAmmo(agents, foes, spawnammo)
+            #LAST:
+            #assign spawned ammo to 3rd agent if not given order yet
+            self.assignGuardCPS(agents)
+            
+        print ('NewOrders: ', self.orders)
+        print "------"
+
+    def assignCapCPS(self, agents):
         for point in self.state[1]:
+<<<<<<< HEAD
             if point[2] != self.team and point[:2] not in self.orders:
                 closestId = self.getClosest(agents, None, point[:2])
                 Agent.orders[closestId] = point[:2]
                 agents.remove(self.getAgent(agents, closestId))
+=======
+                if point[2] != self.team:
+                    if len(agents) > 0:                        
+                            closestId = self.getClosest(agents, None, point[:2])
+                            Agent.orders[closestId] = point[:2]
+                            agents.remove(self.getAgent(agents, closestId))
+                            print ('Order for: ', closestId, 'order: ', point[:2])
+        return agents
+
+    def assignGuardCPSAmmo(self, agents):
+        allTimers = []
+        toRemove = []
+        for agent in list(agents):
+            if agent.observation.ammo:
+                timers = self.getClosestPoint(agent, [self.cps1loc, self.cps2loc])
+                timers.append(timers)
+                #TODO: if more than one agent has some point as closest point, which one is closest of them?
+                # assign goals according to the minimal distances let the other guard the remaining point [[d11, d21],[d12, d22]).
+
+                
+                closestCPS = self.getClosestPoint(agent, [self.cps1loc, self.cps2loc])
+                Agent.orders[agent.id] = closestCPS
+                agents.remove(agent)
+        return agents
+
+    def assignGetAmmo(self, agents, foes, spawnammo):
+        for ammo in spawnammo:
+            if len(agents) > 0:
+                closestId = self.getClosest(agents, foes, ammo)
+                if closestId != -1:
+                    Agent.orders[closestId] = ammo
+                    agents.remove(self.getAgent(agents, closestId))
+                    print ('Order for: ', closestId, 'order: ', ammo)
+        return agents
+
+    def assignGuardCPS(self, agents):
+        ourpoints = []
+        for agent in list(agents):
+            closestId = self.getClosest(agents, None, point[:2])
+            Agent.orders[closestId] = point[:2]
+            agents.remove(self.getAgent(agents, closestId))
+            print ('Order for: ', closestId, 'order: ', point[:2])
+>>>>>>> Start of Plan added
               
     def action(self):
         """ This function is called every step and should
@@ -338,7 +426,7 @@ class Agent(object):
         if obs.respawn_in < 1:
             # Spawned ammo that is not yet in a order
             for a in range(0, len(self.state[2])):
-                if self.state[2][a] == True and self.ammoloc[a] not in self.orders:
+                if self.state[2][a] == True:
                     spawnammo.append(self.ammoloc[a])
             # If goal is reached
             if self.goal is not None  and point_dist(self.goal, obs.loc) < self.settings.tilesize: 
@@ -352,21 +440,21 @@ class Agent(object):
 
         if self.goal == None:
             self.goal = obs.loc
-            
+
+        # Shoot
         shoot = False
-        #### Shoot Enemy
-        # If you have ammo, an enemy is in range and no friendly fire
-        targets = self.find_targets()
-        if targets and obs.ammo > 0:
+        turn = 0
+        speed = 0
+        if (obs.ammo > 0 and 
+            obs.foes and 
+            point_dist(obs.foes[0][0:2], obs.loc) < self.settings.max_range and
+            not line_intersects_grid(obs.loc, obs.foes[0][0:2], self.grid, self.settings.tilesize)):
             self.goal = obs.foes[0][0:2]
             shoot = True
-            speed = 0
-            turn = targets[0]
-            print 'turn to shoot: ' , turn
-            print 'FIIIIIIIIIIIRE!!!!'
-            return (turn, speed, shoot)
-        
-        #### No Enemy
+            for friendly in obs.friends:
+                if line_intersects_circ(obs.loc, obs.foes[0][0:2], friendly, 8):
+                    shoot = False            
+
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
@@ -378,68 +466,8 @@ class Agent(object):
                 startTurn = obs.angle
                 speed = self.reducedSpeed(startTurn, dy, dx, speed)
                 self.shoot = False
-            #speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
-        
-        return (turn,speed,shoot)
-
-        
-    def find_targets(self):
-        shoot = True #will be set to false if it is not allowed to shoot
-        obs = self.observation
-        loc = obs.loc
-        targets = [] #angle to target foes
-        max_turn = self.settings.max_turn
-        max_range = self.settings.max_range
-        radius = 8
-        grid = self.grid
-        tilesize = self.settings.tilesize
-        
-        #find foes: in shooting range and in turn range
-        foes_in_range = []
-        for foe in obs.foes:
-            #calculate distance to foe
-            dist_foe = point_dist(loc, foe[:2])
-            #calculate angle to foe
-            (loc_x, loc_y) = loc
-            (foe_x, foe_y) = foe[:2]
-            angle = math.atan2(foe_y-loc_y, foe_x-loc_x) - obs.angle
-            angle_foe = angle_fix(angle)
-            
-            if dist_foe < max_range and angle_foe < max_turn:
-                foes_in_range.append(foe)
-                targets.append(angle_foe)
-                #print 'added foe in range at point: ' , foe[:2]
-        
-        #if foes_in_range:
-        #    print 'foes in range: ', foes_in_range
-        
-        #no foes in range or no ammo, return empty targets
-        if not foes_in_range or obs.ammo == 0:
-            shoot = False
-            #print 'no foes in range or no ammo'
-            return targets
-        
-        #don't shoot if a friend is in the way
-        for friendly in obs.friends:
-            if line_intersects_circ(loc, obs.foes[0][0:2], friendly, radius):
-                shoot = False
-                print 'Warning: friendly fire'
                 
-        #don't shoot if there is a wall in front of the enemy
-        if line_intersects_grid(loc, obs.foes[0][0:2], self.grid, self.settings.tilesize):
-            shoot = False
-            print 'wall in front of enemy'
-        
-        if shoot == True:
-            print 'CHARGING!'
-            print 'Targets: ', targets
-            print 'angle self: ', obs.angle
-            print 'location self: ', obs.loc
-            print 'location foe: ', foes_in_range[0]
-            return targets
-        else:
-            return [] #not allowed to shoot, so return no targets
-
+        return (turn,speed,shoot)
         
     def debug(self, surface):
         """ Allows the agents to draw on the game UI,
@@ -457,10 +485,6 @@ class Agent(object):
         if self.selected:
             if self.goal is not None:
                 pygame.draw.line(surface,(0,0,0),self.observation.loc, self.goal)
-        
-            if self.observation.ammo > 0:
-                (loc_x, loc_y) = self.observation.loc
-                pygame.draw.rect(surface, (255,0,0), (loc_x, loc_y, 10, 10), 2)
         
     def finalize(self, interrupted=False):
         """ This function is called after the game ends, 
