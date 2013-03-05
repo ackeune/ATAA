@@ -7,7 +7,6 @@ import urllib
 import random
 import re
 import platform
-import math
 from datetime import datetime, time, date, timedelta
 
 # AppEngine imports

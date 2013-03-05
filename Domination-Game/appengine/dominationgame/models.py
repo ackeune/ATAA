@@ -28,14 +28,13 @@ from django.template.defaultfilters import slugify
 
 # Library Imports
 from domination import core as domcore
-from domination.scenarios import MatchInfo
+from domination.run import MatchInfo
 import trueskill
 
 
 ### Constants ###
 APP_URL = "http://aamasgame.appspot.com"
 MAX_ACTIVE_BRAINS = 3
-MAX_ERRORS = 10
 
 ### Exceptions ###
 
@@ -221,11 +220,7 @@ class Account(db.Model):
     
     current_user = None
     current_team = None
-
-    def short_name(self):
-        return self.nickname[:20]
-
-
+    
 class BrainData(db.Model):
     """ Stores reference to binary data blob for an
         agent brain
@@ -299,8 +294,6 @@ class Brain(db.Model):
         self.games_played += 1
         if error:
             self.num_errors += 1
-            if self.num_errors >= MAX_ERRORS:
-                self.active = False
         
     def url(self):
         return reverse("dominationgame.views.brain", args=[self.group.slug, self.key().id()])
