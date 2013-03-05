@@ -135,7 +135,7 @@ class Agent(object):
             newCPS = list(cps)
             newCPS.remove(cps[closestcp])
             self.closest_UCP(team,  loc, newCPS)
-            
+   
     def calcPathTime(self, path, curTurn, curLoc):
         time = 0
         for subGoal in path: #for each subGoal               
@@ -231,12 +231,6 @@ class Agent(object):
                        if self.state[4][n] == None:
                             Agent.state[4][n] =foe
                             break
-                    
-
-         
-                
-            
-        
         # we are ded! 
         if observation.respawn_in > 0:
             Agent.orders[self.id] = None
@@ -271,133 +265,95 @@ class Agent(object):
                 if self.set2 == False:
                     Agent.set2 = True
                     Agent.reset2 = observation.step
-            '''if observation.loc == self.ammo1loc: 
-                    Agent.state[2] = (False, Agent.state[2][1])
-            if observation.loc == self.ammo2loc:
-                    Agent.state[2] =(Agent.state[2][0], False)
-            elif( self.locToZone(observation.loc) == 4):     #only if no ammo seen       
-                  Agent.state[2] = (False, Agent.state[2][1])
-                  if self.set1 == False:
-                    Agent.set1 = True
-                    Agent.reset1 = observation.step
-            elif( self.locToZone(observation.loc) == 5):    #only if no ammo seen
-                  Agent.state[2] =(Agent.state[2][0], False)
-                  if self.set2 == False:
-                    Agent.set2 = True
-                    Agent.reset2 = observation.step'''
-
+        
         #update CPS state
         Agent.state[1] =(observation.cps)
         
         
-        #print self.state
-        
-        
         if observation.selected:
-            #print observation
             pass
+
+    def getClosest(self, agents, foes, goal):
+        '''
+        agents: (agent, agent, agent)
+        foes: [(x,y,angle),...]
+        goal:(x, y)
+        
+        returns closest agent ID or -1 if foe 
+        '''    
+        closestAgent = agents[0]
+        for agent in agents:
+            closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), (agent.observation.loc, agent.observation.angle),  goal )
+            if closest == 1:
+                closestAgent = agent
+        if foes:
+            for foe in foes:
+                closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), foe, goal)
+                if closest == 1:
+                    return -1
+        return closestAgent.id
                     
+
+    
+    def closestToGoal(self, agent0, agent1, goal):
+        '''
+        agents:(loc, angle) goal:(xloc, yloc)
+        
+        returns 0 for agent0, 1 for agent1
+        '''
+        bestTime = 99999
+        path = find_path(agent0[0], goal, self.mesh, self.grid, self.settings.tilesize)
+        if path:
+            bestTime = self.calcPathTime(path, agent0[1], agent0[0])
+        path = find_path(agent1[0], goal, self.mesh, self.grid, self.settings.tilesize)
+        if path:
+            time = self.calcPathTime(path, agent1[1], agent1[0])
+            if(time < bestTime):
+                return 1
+        return 0
+
+    def getAgent(self, agents, aId):
+        for agent in agents:
+            if agent.id == aId:
+                return agent
+    
+    def plan(self, spawnammo):
+        agents = list(self.all_agents)
+        foes = []
+        for agent in agents:
+            foes.append(agent.observation.foes)
+        for point in self.state[1]:
+            if point[2] != self.team and point[:2] not in self.orders:
+                closestId = getClosest(agents, None, point[:2])
+                Agent.orders[closestId] = point[:2]
+                agents.remove(getAgent(agents, closestId))
+              
     def action(self):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
         obs = self.observation
-        # Check if agent reached goal.
-        #print self.goal
-        #print type(self.goal)
-        #print obs.loc
-        #print 'orders', self.orders
-        #print self.goal is not []
-        spawnammo =[]
-        if obs.respawn_in < 1:            
-            for a in range (0, len(self.state[2])):
-                #print 'state', self.state[2][a]
+        spawnammo = []
+        # If alive
+        if obs.respawn_in < 1:
+            # Spawned ammo that is not yet in a order
+            for a in range(0, len(self.state[2])):
                 if self.state[2][a] == True and self.ammoloc[a] not in self.orders:
                     spawnammo.append(self.ammoloc[a])
+            # If goal is reached
             if self.goal is not None  and point_dist(self.goal, obs.loc) < self.settings.tilesize: 
                 self.goal = None
                 Agent.orders[self.id] = None
-                
-            #cap uncapped points
-            #cap spawned ammo
-            print (self.id)
-            print self.state
-            print self.orders[self.id]
-            #print 'made it'   
-            #print len(self.state[1])
-            if self.orders[self.id] in self.ammoloc:
-                if self.orders[self.id] not in spawnammo:# got a goal of ammo that is not there.
-                    self.goal = None
-                    Agent.orders[self.id] = None
-                else:
-                    
-                
-                    #if enemy is closer, leave it
-
-                    #if 
-
-                    self.goal = None
-                    Agent.orders[self.id] = None
-            if self.orders[self.id] == None:
-                for n in range (0, len(self.state[1])):
-                    #print'got here'
-                    #print n
-                    if self.state[1][n][2] != self.team and self.state[1][n][:2] not in self.orders:
-                        #print self.orders
-                        #print self.state[1][n][:2] not in self.orders
-                        print'Going to cap'
-                        #print self.id
-                        #print self.state
-                        self.goal = self.state[1][n][:2]
-                        Agent.orders[self.id] = self.state[1][n][:2]
-                        break
-                     #defend capped points
-                if self.orders[self.id] == None and self.state[0][self.id] == True:
-                    ucp = []
-                    #got ammo now what? 
-                    for n in range (0, len(self.state[1])):
-                        if self.state[1][n][2] != self.team and self.state[1][n][:2] :
-                            ucp.append(self.state[1][n])
-                           # print self.state[1][n]
-                           #print 'uncapped point located'
-                    #print type (ucp )
-                    print 'got ammo trying to find a CP'
-                    if ucp:
-                        tgoal = self.closest_UCP (self.team,  obs.loc, ucp) # can return Noone ?! 
-                        #print 'tgoal',tgoal
-                        self.goal = tgoal
-                        Agent.orders[self.id] = tgoal
-                    if(self.orders[self.id] == None):
-                        self.goal = obs.cps[self.closest_CP(obs.loc, obs.cps)][:2] #TODO: CLOSEST MIGHT NOT BE CLOSE IF THERE ARE WALLLSSSS
-                        Agent.orders[self.id] = self.goal
-                # we know some ammo has spawned            
-                elif self.goal ==None and len(spawnammo) > 0  :
-                    print 'Getting ammo'
-                    print spawnammo
-                    self.goal = self.closest_ammo(obs.loc, spawnammo)
-                    Agent.orders[self.id] = self.goal
-                    #print 'woops'
-                    
-                elif self.orders[self.id] == None:
-                    #print obs.cps[self.closest_CP(obs.loc,obs.cps)]
-                    #print self.closest_CP(obs.loc,obs.cps)
-                    print 'Nothing new to do stay on point'
-                    self.goal = obs.cps[self.closest_CP(obs.loc,obs.cps)][:2]
-                    print self.goal
-                            
+            # plan orders
+            self.plan(spawnammo)
+            self.goal = self.orders[self.id]
         else:
             self.goal = obs.loc
-            print 'IM DEAD :('
-                        
-        #print self.goal           
-                        
-                    
-        # Drive to where the user clicked
-        # Clicked is a list of tuples of (x, y, shift_down, is_selected)
-        
-        print self.orders
-        
-        # Shoot enemies
+
+        if self.goal == None:
+            self.goal = obs.loc
+
+        # Shoot
         shoot = False
         turn = 0
         speed = 0
@@ -409,8 +365,7 @@ class Agent(object):
             shoot = True
             for friendly in obs.friends:
                 if line_intersects_circ(obs.loc, obs.foes[0][0:2], friendly, 8):
-                    shoot = False
-            
+                    shoot = False            
 
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
@@ -423,11 +378,7 @@ class Agent(object):
                 startTurn = obs.angle
                 speed = self.reducedSpeed(startTurn, dy, dx, speed)
                 self.shoot = False
-            #speed = ( dx ** 2 + dy ** 2 ) ** 0.5 / 3 # to overcome overshooting
-        
-        
-
-        
+                
         return (turn,speed,shoot)
         
     def debug(self, surface):

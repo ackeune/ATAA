@@ -314,12 +314,57 @@ class Agent(object):
                 curLoc = (curLoc0, curLoc1)
                 time += 1
         return time
+
+
+    '''
+    agents: (agent, agent, agent)
+    foes: [(x,y,angle),...]
+    goal:(x, y)
+    
+    returns closest agent ID or -1 if foe 
+    '''
+    def getClosest(self, agents, foes, goal):
+        closestAgent = agents[0]
+        for agent in agents:
+            closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), (agent.observation.loc, agent.observation.angle),  goal )
+            if closest == 1:
+                closestAgent = agent
+        if foes:
+            for foe in foes:
+                closest = self.closestToGoal( (closestAgent.observation.loc, closestAgent.observation.angle), foe, goal)
+                if closest == 1:
+                    return -1
+        return closestAgent.id
+                    
+
+    
+    '''
+    agents:(loc, angle) goal:(xloc, yloc)
+    
+    returns 0 for agent0, 1 for agent1
+    '''
+    def closestToGoal(self, agent0, agent1, goal):
+        bestTime = 99999
+        path = find_path(agent0[0], goal, self.mesh, self.grid, self.settings.tilesize)
+        if path:
+            bestTime = self.calcPathTime(path, agent0[1], agent0[0])
+        path = find_path(agent1[0], goal, self.mesh, self.grid, self.settings.tilesize)
+        if path:
+            time = self.calcPathTime(path, agent1[1], agent1[0])
+            if(time < bestTime):
+                return 1
+        return 0
+                
     
     def action(self):
         """ This function is called every step and should
             return a tuple in the form: (turn, speed, shoot)
         """
-    
+        print ('Action agent: ',self.id)
+        for agent in self.all_agents:
+            print agent.observation.loc
+        closest = self.getClosest(self.all_agents, None, (24, 100))
+        print ('Closest: ', closest)
         obs = self.observation
         #f = open('testfile.txt','a')
         #f.write('CheckingVision: ' + str(self.goal) + '\n')
@@ -435,23 +480,11 @@ class Agent(object):
         # Selected agents draw their info
         if self.selected:
             if self.goal is not None:
-                if self.id == 0:
-                    estimate = self.estimate0
-                elif self.id == 1:
-                    estimate = self.estimate1
-                elif self.id == 2:
-                    estimate = self.estimate2
-                obs = self.observation
-                foes = obs.foes
-                for foe in foes:
-                    print ('FOE!: ', foe)
-                    path = find_path((foe[0], foe[1]), self.goal, self.mesh, self.grid, self.settings.tilesize)
-                    if path:
-                        pathTime = self.calcPathTime(path, foe[2], (foe[0], foe[1]))
-                        if pathTime < estimate:
-                            pygame.draw.circle(surface, (255,0,0),obs.loc, 5, 5)
-                        else:
-                            pygame.draw.circle(surface, (0,255,0),obs.loc, 5, 5)
+                closest = self.getClosest(self.all_agents, None, self.goal)
+                if closest == self.id:
+                    pygame.draw.circle(surface, (0,255,0),self.observation.loc, 5, 5)
+                else:
+                    pygame.draw.circle(surface, (255,0,0),self.observation.loc, 5, 5)
                 pygame.draw.line(surface,(0,0,0),self.observation.loc, self.goal)
         
     def finalize(self, interrupted=False):
