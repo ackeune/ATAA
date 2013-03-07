@@ -108,8 +108,8 @@ class Agent(object):
             return -1
 
     def closest_CP(self, loc, CPS):
-        print loc
-        print CPS
+        #print loc
+        #print CPS
         bestdist = 9999
         best = 0
         for i in range (0, len(CPS)):
@@ -118,19 +118,19 @@ class Agent(object):
                 bestdist = dist
                 best = i
         if (len(CPS) == 1):
-            print 'only 1 cps lol?'
+            #print 'only 1 cps lol?'
             return 0
-        print best
+        #print best
         return best
     
     def closest_UCP (self, team,  loc, cps):
         closestcp = self.closest_CP(loc,cps)
-        #print'==========='
-        #print len(cps)
-        #print closestcp
-        #print cps[closestcp]
-        #print team
-        #print '===='
+        ##print'==========='
+        ##print len(cps)
+        ##print closestcp
+        ##print cps[closestcp]
+        ##print team
+        ##print '===='
         if cps[closestcp][2] != team:
             #fix dis
             return (cps[closestcp][:2]) 
@@ -342,8 +342,8 @@ class Agent(object):
         #check if there are agents to plan for
         if len(agents) > 0:
             #find all visible foes            
-            print ('PLANNING!! for alive agents: ', len(agents))
-            print ('Curorders: ', self.orders)
+            #print ('PLANNING!! for alive agents: ', len(agents))
+            #print ('Curorders: ', self.orders)
             cappedPoints = []
             for point in self.state[1]:#get capped points
                 if point[2] == self.team:
@@ -351,23 +351,23 @@ class Agent(object):
             #FIRST:
             #assign uncapped CPS to agents
             agents = self.assignCapCPS(agents)
-            print ('After capCPS: ', len(agents))
+            #print ('After capCPS: ', len(agents))
             #SECOND:
             #guard CPS with ammo
-            print (self.state[1][0][:2],self.state[1][1][:2])
+            #print (self.state[1][0][:2],self.state[1][1][:2])
             agents = self.assignGuardCPSAmmo([self.state[1][0][:2],self.state[1][1][:2]], agents)
-            print ('After AmmoGuard: ', len(agents))
+            #print ('After AmmoGuard: ', len(agents))
             #Third
             #assign getAmmo
             agents = self.assignGuardCPS(cappedPoints, agents)
-            print ('After guardCPS: ', len(agents))
+            #print ('After guardCPS: ', len(agents))
             #LAST:
             #assign spawned ammo to 3rd agent if not given order yet
             self.assignGetAmmo(agents, None, spawnammo)
-            print ('After Ammo: ', len(agents), spawnammo)
+            #print ('After Ammo: ', len(agents), spawnammo)
             
-        print ('NewOrders: ', self.orders)
-        print "------"
+        #print ('NewOrders: ', self.orders)
+        #print "------"
 
     def assignCapCPS(self, agents):
         for point in self.state[1]:
@@ -376,7 +376,7 @@ class Agent(object):
                             closestId = self.getClosest(agents, None, point[:2])
                             Agent.orders[closestId] = point[:2]
                             agents.remove(self.getAgent(agents, closestId))
-                            print ('Order for cap CPS: ', closestId, 'order: ', point[:2])
+                            #print ('Order for cap CPS: ', closestId, 'order: ', point[:2])
         return agents
 
     def assignGuardCPSAmmo(self, cappedPoints, agents):#TODO, assigning goes wrong. agentToAssign and idToAssign bugged!
@@ -404,7 +404,7 @@ class Agent(object):
                 if self.unGuardedPoint(idToAssign, point, False):
                     cappedPoints.remove(point)
                     Agent.orders[idToAssign] = point
-                    print ('Order for GuardCPSAMMO: ', idToAssign, 'order: ', point)
+                    #print ('Order for GuardCPSAMMO: ', idToAssign, 'order: ', point)
                     agents.remove(agentsWithAmmo[agentToAssign])
                     return self.assignGuardCPSAmmo(cappedPoints, agents)
                 else:
@@ -413,13 +413,30 @@ class Agent(object):
         return agents      
 
     def assignGetAmmo(self, agents, foes, spawnammo):
-        for ammo in spawnammo:
-            if len(agents) > 0:
-                closestId = self.getClosest(agents, foes, ammo)
-                if closestId != -1:
-                    Agent.orders[closestId] = ammo
-                    agents.remove(self.getAgent(agents, closestId))
-                    print ('Order for getAMMO: ', closestId, 'order: ', ammo)
+        allTimers = []
+        pointCount = len(spawnammo)
+        pointAgentCount = len(spawnammo)
+        if len(spawnammo):
+            for agent in list(agents):#calc time to reach those points for all agents that dont have orders yet
+                timers = self.getClosestPoint(agent, spawnammo)
+                for timer in timers:
+                    allTimers.append(timer)
+            for agent in list(agents):#for all agets that dont have orders yet
+                closest = min(allTimers)#closest dist to any point
+                closestId = allTimers.index(closest)#index of that dist
+                agentToAssign = int(math.floor(closestId/pointAgentCount))#index to agentid in agents (floor in case of 2 points where 2nd point is closest)
+                idToAssign = agents[agentToAssign].id
+                #print ('SpawnedAmmo: ', spawnammo)
+                if closestId % pointCount == 1 and pointCount > 1: #2st point
+                    point = spawnammo[1]
+                else:#1nd point
+                    point = spawnammo[0]                
+                if True:
+                    spawnammo.remove(point)
+                    Agent.orders[idToAssign] = point
+                    #print ('Order for getAmmp: ', idToAssign, 'order: ', point)
+                    agents.remove(agents[agentToAssign])
+                    return self.assignGuardCPS(spawnammo, agents)                   
         return agents
 
     def assignGuardCPS(self, cappedPoints, agents):#TODO: FIX THIS :D include switch: if no1 close to point yet go to that point, else wait for ammo.
@@ -436,7 +453,7 @@ class Agent(object):
                 closestId = allTimers.index(closest)#index of that dist
                 agentToAssign = int(math.floor(closestId/pointAgentCount))#index to agentid in agents (floor in case of 2 points where 2nd point is closest)
                 idToAssign = agents[agentToAssign].id
-                print ('CappedPoints: ', cappedPoints)
+                #print ('CappedPoints: ', cappedPoints)
                 if closestId % pointCount == 1 and pointCount > 1: #2st point
                     point = cappedPoints[1]
                 else:#1nd point
@@ -444,11 +461,11 @@ class Agent(object):
                 if self.unGuardedPoint(idToAssign, point, True):
                     cappedPoints.remove(point)
                     Agent.orders[idToAssign] = point
-                    print ('Order for GuardCPS: ', idToAssign, 'order: ', point)
+                    #print ('Order for GuardCPS: ', idToAssign, 'order: ', point)
                     agents.remove(agents[agentToAssign])
                     return self.assignGuardCPS(cappedPoints, agents)
                 else:
-                    print ('guarded already')
+                    #print ('guarded already')
                     cappedPoints.remove(point)
                     return self.assignGuardCPS(cappedPoints, agents)                    
         return agents
@@ -526,10 +543,10 @@ class Agent(object):
             shoot = True
             speed = 0
             turn = targets[0]
-            print 'turn to shoot: ' , turn
-            print 'FIIIIIIIIIIIRE!!!!'
+            #print 'turn to shoot: ' , turn
+            #print 'FIIIIIIIIIIIRE!!!!'
             return (turn, speed, shoot)    
-
+        
         # Compute path, angle and drive
         path = find_path(obs.loc, self.goal, self.mesh, self.grid, self.settings.tilesize)
         if path:
@@ -572,34 +589,34 @@ class Agent(object):
             if dist_foe < max_range and angle_foe < max_turn:
                 foes_in_range.append(foe)
                 targets.append(angle_foe)
-                #print 'added foe in range at point: ' , foe[:2]
+                ##print 'added foe in range at point: ' , foe[:2]
         
         #if foes_in_range:
-        #    print 'foes in range: ', foes_in_range
+        #    #print 'foes in range: ', foes_in_range
         
         #no foes in range or no ammo, return empty targets
         if not foes_in_range or obs.ammo == 0:
             shoot = False
-            #print 'no foes in range or no ammo'
+            ##print 'no foes in range or no ammo'
             return targets
         
         #don't shoot if a friend is in the way
         for friendly in obs.friends:
             if line_intersects_circ(loc, obs.foes[0][0:2], friendly, radius):
                 shoot = False
-                print 'Warning: friendly fire'
+                #print 'Warning: friendly fire'
                 
         #don't shoot if there is a wall in front of the enemy
         if line_intersects_grid(loc, obs.foes[0][0:2], self.grid, self.settings.tilesize):
             shoot = False
-            print 'wall in front of enemy'
+            #print 'wall in front of enemy'
         
         if shoot == True:
-            print 'CHARGING!'
-            print 'Targets: ', targets
-            print 'angle self: ', obs.angle
-            print 'location self: ', obs.loc
-            print 'location foe: ', foes_in_range[0]
+            #print 'CHARGING!'
+            #print 'Targets: ', targets
+            #print 'angle self: ', obs.angle
+            #print 'location self: ', obs.loc
+            #print 'location foe: ', foes_in_range[0]
             return targets
         else:
             return [] #not allowed to shoot, so return no targets
