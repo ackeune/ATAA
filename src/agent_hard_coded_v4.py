@@ -586,7 +586,7 @@ class Agent(object):
             angle = math.atan2(foe_y-loc_y, foe_x-loc_x) - obs.angle
             angle_foe = angle_fix(angle)
             
-            if dist_foe < max_range and angle_foe < max_turn:
+            if dist_foe < max_range and abs(angle_foe) < max_turn:
                 foes_in_range.append(foe)
                 targets.append(angle_foe)
                 ##print 'added foe in range at point: ' , foe[:2]
