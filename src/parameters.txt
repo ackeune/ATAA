@@ -1,0 +1,100 @@
+Action 0: (: cps1loc) 
+as2 filled : -411.19276386
+Am I closest ally to as2 : -618.714564476
+Am I closest ally to as1 : -348.714318192
+Am I closest ally to cp2 : -284.765325192
+nearest enemy distance to as1 : -61.2738601181
+distance to cp1 : -26.6950786688
+ammo amount : -270.834722852
+Am I dead : 4.724695043
+as1 filled : 142.998423641
+distance to as1 : -40.5909041871
+distance to as2 : -21.0001467666
+cp2 of us : -183.785827419
+Am I closest ally to cp1 : 43.3889984639
+cp1 of us : -221.11980662
+nearest enemy distance to cp1 : -80.6846474544
+nearest enemy distance to cp2 : 13.9200857168
+distance to cp2 : -50.8067570781
+nearest enemy distance to as2 : -44.0093820387
+
+Action 1: (: cps2loc) 
+as2 filled : -726.920576005
+Am I closest ally to as2 : -589.017751516
+Am I closest ally to as1 : -173.630896248
+Am I closest ally to cp2 : -476.351807194
+nearest enemy distance to as1 : -51.3707904549
+distance to cp1 : -228.738051579
+ammo amount : -348.891533513
+Am I dead : 250.208137813
+as1 filled : 8.60513224034
+distance to as1 : -121.536286767
+distance to as2 : -82.0225585975
+cp2 of us : -582.45680681
+Am I closest ally to cp1 : 108.566977991
+cp1 of us : -38.3472141909
+nearest enemy distance to cp1 : -182.32941619
+nearest enemy distance to cp2 : -38.808462972
+distance to cp2 : 113.221383893
+nearest enemy distance to as2 : -78.4220360987
+
+Action 2: (: ammo1loc) 
+as2 filled : -727.747614562
+Am I closest ally to as2 : -940.880087853
+Am I closest ally to as1 : -855.531969152
+Am I closest ally to cp2 : -44.7013454877
+nearest enemy distance to as1 : -166.926479715
+distance to cp1 : -189.070452376
+ammo amount : -662.505000137
+Am I dead : 375.01815247
+as1 filled : 183.643974748
+distance to as1 : 42.0761052463
+distance to as2 : -37.1693696508
+cp2 of us : -432.6371218
+Am I closest ally to cp1 : -44.5990433551
+cp1 of us : 58.4204767359
+nearest enemy distance to cp1 : -197.355831954
+nearest enemy distance to cp2 : -77.2727602368
+distance to cp2 : -224.789097438
+nearest enemy distance to as2 : -155.801943974
+
+Action 3: (: ammo2loc) 
+as2 filled : 208.611977441
+Am I closest ally to as2 : -900.96651987
+Am I closest ally to as1 : -687.161049947
+Am I closest ally to cp2 : -116.644431972
+nearest enemy distance to as1 : -44.0710956125
+distance to cp1 : -141.729202813
+ammo amount : -241.307658308
+Am I dead : 281.046454995
+as1 filled : -184.633849342
+distance to as1 : -64.8838773599
+distance to as2 : 53.1520939396
+cp2 of us : -357.604757376
+Am I closest ally to cp1 : 84.7835000393
+cp1 of us : -327.125140158
+nearest enemy distance to cp1 : -21.848380489
+nearest enemy distance to cp2 : -114.988380052
+distance to cp2 : -135.052457917
+nearest enemy distance to as2 : -15.5179524706
+
+Action 4: (: stay in place) 
+as2 filled : -368.623525613
+Am I closest ally to as2 : -573.071385578
+Am I closest ally to as1 : -348.606382413
+Am I closest ally to cp2 : -131.345350514
+nearest enemy distance to as1 : -70.6784610187
+distance to cp1 : -38.8435351242
+ammo amount : -236.564339599
+Am I dead : 110.074760668
+as1 filled : 63.0553186376
+distance to as1 : 10.4171143335
+distance to as2 : -26.4581350192
+cp2 of us : -199.37712639
+Am I closest ally to cp1 : 48.0484034193
+cp1 of us : -182.243504873
+nearest enemy distance to cp1 : -37.2358515647
+nearest enemy distance to cp2 : -66.7761628502
+distance to cp2 : -24.2921735982
+nearest enemy distance to as2 : -76.9696741061
+
