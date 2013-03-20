@@ -62,8 +62,24 @@ class Agent(object):
                self.callsign, type(pickle.loads(blob.read())))
             # Reset the file so other agents can read it.
             blob.seek(0)
-            self.blobdict = pickle.loads(blob.read())
+            tempBlob = pickle.loads(blob.read())
+            self.blobdict = tempBlob[0]
+            self.policy = tempBlob[1]
+            self.avgPolicy = tempBlob[2]
+            self.avgPolicyCounter = tempBlob[3]
             blob.seek(0)
+            print "my Qtable looks like:"
+            for state in self.blobdict:
+                print "{0}:{1}".format(state,self.blobdict[state])
+            print "my policy looks like:"
+            for state in self.policy:
+                print "{0}:{1}".format(state,self.policy[state])
+            print "my avgpolicy looks like:"
+            for state in self.avgPolicy:
+                print "{0},{1}".format(state,self.avgPolicy[state])
+            print "my policy looks like:"
+            for state in self.avgPolicyCounter:
+                print "{0},{1}".format(state,self.avgPolicyCounter[state])
         print "init test agent\n"
         # Recommended way to share variables between agents.
         if id == 0:
@@ -692,6 +708,8 @@ class Agent(object):
         """
         #if self.score[self.team] >= self.score[1-self.team] :
         if 1:
-            pickle.dump(self.blobdict, open('../src/agent_test_blob', 'wb'))
+            tempBlob = [self.blobdict, self.policy, self.avgPolicy, self.avgPolicyCounter]
+            pickle.dump(tempBlob, open('../src/agent_bfdb_blob', 'wb'))
+            #pickle.dump(self.blobdict, open('../src/agent_bfdb_blob', 'wb'))
         pass
 
