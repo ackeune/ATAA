@@ -98,7 +98,7 @@ class Tournament2(scenarios.Scenario):
 
 
 # Make it a short game
-SETTINGS  = core.Settings(max_steps=30,
+SETTINGS  = core.Settings(max_steps=100,
                               max_score=100,
                               spawn_time=11,
                               ammo_amount=1,  

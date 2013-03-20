@@ -960,7 +960,7 @@ class Agent(object):
            
             doUpdate = True
             
-        if (doUpdate == True): # parameters voor Q(s,a) zijn geupdate
+        if (doUpdate == True and self.oldActionNumber != 5): # parameters voor Q(s,a) zijn geupdate
             self.nrSteps = 0
            
             temporalDifferenceValue = reward + Agent.gamma * value - self.oldStateActionValue            
@@ -968,6 +968,8 @@ class Agent(object):
             self.updateParameters(self.oldActionNumber, temporalDifferenceValue)
             
             newActionValues = self.calcValueActions2(self.lastFeatureVector)   # nieuwe Q(s,a) values voor alle acties
+            print"==================> self.oldActionNumber"
+            print self.oldActionNumber
             self.updatePolicyWoLFPHC(self.lastPolicyState, self.oldActionNumber, newActionValues)
             self.lastPolicyState = self.policyState
             self.lastFeatureVector = copy.deepcopy(self.featureVector)
@@ -1033,7 +1035,7 @@ class Agent(object):
         return (action, value)
         
     def updatePolicyWoLFPHC(self, state, action, values):
-        if action != -1:
+        if state != ():
 #        values = self.blobdict[str(state)]
             self.avgPolicyCounter[state] += 1.0
             print 'the average Policy for {0} is {1} BEFORE:'.format(state, self.avgPolicy[state])
@@ -1100,7 +1102,11 @@ class Agent(object):
 
             for i in range(0,Agent.numActions):
                 self.policy[state][i] = self.policy[state][i]/policyValueSum
-
+            
+            print state
+            print action
+            print self.policy[state][action]
+            print self.policy[state]
             print 'I updated the policy for state {0} and action {1} with the following value {2} so now the policy is: {3}'.format(state, action, self.policy[state][action], self.policy[state])
             
 
