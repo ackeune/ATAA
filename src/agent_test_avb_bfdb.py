@@ -96,9 +96,9 @@ class Agent(object):
                         for i in range(numActions)]
 
 
-    NAME = "Berend Botje"
+    NAME = "Ivan III"
     
-    printStuff = True
+    printStuff = False
     
     policy = {}
     avgPolicy = {}
@@ -130,6 +130,8 @@ class Agent(object):
     AMMO1 = True
     AMMO2 = True
     
+    onServer = 1
+    
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, tilesize=None, **kwargs):
         """ Each agent is initialized at the beginning of each game.
             The first agent (id==0) can use this to set up global variables.
@@ -147,8 +149,8 @@ class Agent(object):
         if blob is not None:
             blobObject = pickle.loads(blob.read())
             blob.seek(0)
-            print "Agent %s received binary blob of %s" % (
-               self.callsign, type(blobObject))
+            #print "Agent %s received binary blob of %s" % (
+            #   self.callsign, type(blobObject))
            
             tempBlob = blobObject
             Agent.parameterVectors = tempBlob[0]
@@ -156,18 +158,18 @@ class Agent(object):
             self.avgPolicy = tempBlob[2]
             self.avgPolicyCounter = tempBlob[3]
             
-            print "our parameter vectors look like:"
-            for i in range(0, Agent.numActions):
-                print Agent.parameterVectors[i]
-            print "my policy looks like:"
-            for state in self.policy:
-                print "{0}:{1}".format(state,self.policy[state])
-            print "my avgpolicy looks like:"
-            for state in self.avgPolicy:
-                print "{0},{1}".format(state,self.avgPolicy[state])
-            print "my policy looks like:"
-            for state in self.avgPolicyCounter:
-                print "{0},{1}".format(state,self.avgPolicyCounter[state])
+            #~print "our parameter vectors look like:"
+            #~for i in range(0, Agent.numActions):
+                #~print Agent.parameterVectors[i]
+            #~print "my policy looks like:"
+            #~for state in self.policy:
+                #~print "{0}:{1}".format(state,self.policy[state])
+            #~print "my avgpolicy looks like:"
+            #~for state in self.avgPolicy:
+                #~print "{0},{1}".format(state,self.avgPolicy[state])
+            #~print "my policy looks like:"
+            #~for state in self.avgPolicyCounter:
+                #~print "{0},{1}".format(state,self.avgPolicyCounter[state])
                 
         # Read the binary blob, we're not using it though
         #~if blob is not None:
@@ -370,7 +372,7 @@ class Agent(object):
         # calculate this state's features
         self.calcFeatures()
         
-        self.writeFeaturesToFile()
+        #self.writeFeaturesToFile()
         
         #print "===> state: "
         #print Agent.state
@@ -397,10 +399,10 @@ class Agent(object):
             foes = True
             
         self.policyState = (self.locToZone(observation.loc), cps1[2], cps2[2], ammo, self.AMMO1, self.AMMO2, foes)
-        print "==========================> self.policyState:"
-        print self.policyState
-        print "==========================> self.lastPolicyState:"
-        print self.lastPolicyState
+        #print "==========================> self.policyState:"
+        #print self.policyState
+        #print "==========================> self.lastPolicyState:"
+        #print self.lastPolicyState
         
         #~print "Agent.laststate: "
         #~print Agent.lastState
@@ -597,9 +599,9 @@ class Agent(object):
         elif (loc[0] >= 23*16 and loc[1] >= 12*16) or (loc[0] >= 26*16 and loc[1] == 11*16): #Gray right zone
             return self.GRAYRIGHTZONE
         else:
-            f2 = open('fail.txt','a')
-            f2.write(str(loc))
-            f2.close()
+            #~f2 = open('fail.txt','a')
+            #~f2.write(str(loc))
+            #~f2.close()
             return -1
             
     # old
@@ -790,7 +792,7 @@ class Agent(object):
 
         
         if(Agent.printStuff):
-            sys.stdout.write('Agent ' + str(self.id) + 's selectedAction: ' + Agent.actionNames[selectedActionNumber] + ' selectedActionValue: ' + str(selectedActionValue))
+            #sys.stdout.write('Agent ' + str(self.id) + 's selectedAction: ' + Agent.actionNames[selectedActionNumber] + ' selectedActionValue: ' + str(selectedActionValue))
         if (randomChoice == True):
             if(Agent.printStuff):
                 sys.stdout.write(' (chosen randomly)')
@@ -871,11 +873,11 @@ class Agent(object):
                 Agent.parameterVectors[actionNumber][keyParam] = Agent.parameterVectors[actionNumber][keyParam] + Agent.gradientLearningRate * temporalDifferenceValue * self.lastFeatureVector[keyParam]
             
         
-            self.writeParametersToFile();
+            #self.writeParametersToFile();
             
             
             
-    # uit test2
+    
     def getActionAndUpdate(self):
         
         actionNumber = copy.deepcopy(self.actionNumber)
@@ -968,8 +970,8 @@ class Agent(object):
             self.updateParameters(self.oldActionNumber, temporalDifferenceValue)
             
             newActionValues = self.calcValueActions2(self.lastFeatureVector)   # nieuwe Q(s,a) values voor alle acties
-            print"==================> self.oldActionNumber"
-            print self.oldActionNumber
+            #print"==================> self.oldActionNumber"
+            #print self.oldActionNumber
             self.updatePolicyWoLFPHC(self.lastPolicyState, self.oldActionNumber, newActionValues)
             self.lastPolicyState = self.policyState
             self.lastFeatureVector = copy.deepcopy(self.featureVector)
@@ -995,10 +997,10 @@ class Agent(object):
             self.policy[state][action] = 1.0/Agent.numActions
             self.avgPolicy[state][action] = 1.0/Agent.numActions
         self.avgPolicyCounter[state] = 0
-        print 'I initiated the policy for state {0} with the following prob. values {1}'.format(state, self.policy[state])
-        print 'So now the policy looks like:'
-        for state in self.policy:
-            print '{0}:{1}'.format(state, self.policy[state]) 
+        #print 'I initiated the policy for state {0} with the following prob. values {1}'.format(state, self.policy[state])
+        #print 'So now the policy looks like:'
+        #for state in self.policy:
+        #    print '{0}:{1}'.format(state, self.policy[state]) 
             
     #get action according to policy
     def planActionPHC(self, policyState):
@@ -1021,7 +1023,7 @@ class Agent(object):
             value = selectedActionValue
             
         else: #policyState not in policy dict
-            print 'planActionPHC says that ' +str(policyState) + 'does NOT exist'
+            #print 'planActionPHC says that ' +str(policyState) + 'does NOT exist'
             #[cap nearest, get ammo] hunt/camp points/control zone
             values = [self.Qinit]*Agent.numActions
             self.initPolicy(policyState) # init policy with random probabilities
@@ -1030,7 +1032,7 @@ class Agent(object):
             value = self.Qinit
             #f.write('notinblobyet' + '\n')
             
-        print 'planActionPHC selected action {0} with value {1} from values {2}'.format(action,value,values)
+        #print 'planActionPHC selected action {0} with value {1} from values {2}'.format(action,value,values)
         
         return (action, value)
         
@@ -1038,7 +1040,7 @@ class Agent(object):
         if state != ():
 #        values = self.blobdict[str(state)]
             self.avgPolicyCounter[state] += 1.0
-            print 'the average Policy for {0} is {1} BEFORE:'.format(state, self.avgPolicy[state])
+            #print 'the average Policy for {0} is {1} BEFORE:'.format(state, self.avgPolicy[state])
             avgPolicyValueSum = 0
             for b in range(0, Agent.numActions):
                 self.avgPolicy[state][b] += 1/self.avgPolicyCounter[state]*(self.policy[state][b] - self.avgPolicy[state][b])
@@ -1051,10 +1053,10 @@ class Agent(object):
             for b in range(0, Agent.numActions):
                 avgPolicyQSum += self.avgPolicy[state][b]*values[b]
 
-            print 'the average Policy for {0} is {1} AFTER:'.format(state, self.avgPolicy[state])
+            #print 'the average Policy for {0} is {1} AFTER:'.format(state, self.avgPolicy[state])
             maxVals = []
             maxVal = None
-            print 'Q values {0}'.format(values)
+            #print 'Q values {0}'.format(values)
             for i in range(0,Agent.numActions):
                 if(maxVal == None):
                     maxVal = values[i]
@@ -1065,34 +1067,34 @@ class Agent(object):
                 elif(values[i] == maxVal):
                     maxVals.append(i)
             favouredAction = random.choice(maxVals)
-            print 'favouredAction {0}'.format(favouredAction)
+            #print 'favouredAction {0}'.format(favouredAction)
             policyQSum = 0.0
             for i in range(len(values)):
                 policyQSum += self.policy[state][i]*values[i]
-            print '****************************************************'
-            print 'policyQSum {0}'.format(policyQSum)
-            print 'avgPolicyQSum {0}'.format(avgPolicyQSum)
+            #print '****************************************************'
+            #print 'policyQSum {0}'.format(policyQSum)
+            #print 'avgPolicyQSum {0}'.format(avgPolicyQSum)
             if policyQSum > avgPolicyQSum:
                 self.delta = self.deltaWin
-                print 'win delta {0}'.format(self.delta)
+                #print 'win delta {0}'.format(self.delta)
             else:
                 self.delta = self.deltaLose
-                print 'loose delta {0}'.format(self.delta)
-            print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+                #print 'loose delta {0}'.format(self.delta)
+            #print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
             policyOffset = 0.0
             for i in range(0,Agent.numActions):
                 if i == favouredAction:
                     self.policy[state][i] += self.delta
-                    print '{0} is the favouredAction'.format(i)
-                    print 'self.policy[{0}][{1}] = {2}'.format(state,i,self.policy[state][i])
+                    #print '{0} is the favouredAction'.format(i)
+                    #print 'self.policy[{0}][{1}] = {2}'.format(state,i,self.policy[state][i])
                 else:
                     self.policy[state][i] -= self.delta/(len(values)-1)
-                    print '{0} is NOT the favouredAction'.format(i)
-                    print 'self.policy[{0}][{1}] = {2}'.format(state,i,self.policy[state][i])
+                    #print '{0} is NOT the favouredAction'.format(i)
+                    #print 'self.policy[{0}][{1}] = {2}'.format(state,i,self.policy[state][i])
 
                 if (self.policy[state][i] < 0.0) and (abs(self.policy[state][i]) > policyOffset):
                     policyOffset = abs(self.policy[state][i])
-                    print 'value of action {0} is {1}, which is negative'.format(i, self.policy[state][i])
+                    #print 'value of action {0} is {1}, which is negative'.format(i, self.policy[state][i])
 
             
             policyValueSum = 0.0
@@ -1103,11 +1105,11 @@ class Agent(object):
             for i in range(0,Agent.numActions):
                 self.policy[state][i] = self.policy[state][i]/policyValueSum
             
-            print state
-            print action
-            print self.policy[state][action]
-            print self.policy[state]
-            print 'I updated the policy for state {0} and action {1} with the following value {2} so now the policy is: {3}'.format(state, action, self.policy[state][action], self.policy[state])
+            #print state
+            #print action
+            #print self.policy[state][action]
+            #print self.policy[state]
+            #print 'I updated the policy for state {0} and action {1} with the following value {2} so now the policy is: {3}'.format(state, action, self.policy[state][action], self.policy[state])
             
 
           
@@ -1268,10 +1270,10 @@ class Agent(object):
             interrupt (CTRL+C) by the user. Use it to
             store any learned variables and write logs/reports.
         """
-       
-        tempBlob = [self.parameterVectors, self.policy, self.avgPolicy, self.avgPolicyCounter]
-        pickle.dump(tempBlob, open('../src/agent_test_avb_bfdb_blob', 'wb'))
-
+        if(not(Agent.onServer)):
+            tempBlob = [self.parameterVectors, self.policy, self.avgPolicy, self.avgPolicyCounter]
+            pickle.dump(tempBlob, open('../src/agent_test_avb_bfdb_blob', 'wb'))
+        pass
 
 
     #############################

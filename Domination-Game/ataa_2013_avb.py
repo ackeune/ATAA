@@ -98,7 +98,7 @@ class Tournament2(scenarios.Scenario):
 
 
 # Make it a short game
-SETTINGS  = core.Settings(max_steps=100,
+SETTINGS  = core.Settings(max_steps=300,
                               max_score=100,
                               spawn_time=11,
                               ammo_amount=1,  
@@ -137,7 +137,7 @@ for i in range(0,1):
     
     blobFileBlue = None
     
-    game = core.Game(red='../src/agent_test_avb_bfdb.py',blue='domination/agent.py', record=False, rendered=True, settings=SETTINGS, red_init={'blob': blobFileRed}, blue_init={'blob': blobFileBlue}, field=core.Field.from_string(FIELD2))
+    game = core.Game(red='../src/agent_test_avb_bfdb.py',blue='../src/agent_test_avb_bfdb.py', record=False, rendered=True, settings=SETTINGS, red_init={'blob': blobFileRed}, blue_init={'blob': blobFileBlue}, field=core.Field.from_string(FIELD2))
     game.run()
    
 

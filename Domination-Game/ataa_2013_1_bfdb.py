@@ -1,8 +1,33 @@
-import math
-from domination import core
-from domination import run
+#!/usr/bin/env python
 
-FIELD = """
+import sys
+import math
+import os
+import datetime
+from domination import core, scenarios
+import pickle
+
+FIELD1 = """
+w w w w w w w w w w w w w w w w w w w w w w w w w w w w w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ w _ C _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ w _ _ _ w w w w w w w w w w w _ _ _ _ _ _ w
+w _ _ w _ _ _ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w _ _ w
+w R _ w _ _ _ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w _ B w
+w R _ w _ _ _ w _ A _ _ w w w w w _ _ A _ w _ _ _ w _ B w
+w R _ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w _ _ _ w _ B w
+w _ _ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w _ _ _ w _ _ w
+w _ _ _ _ _ _ w w w w w w w w w w w _ _ _ w _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ C _ w _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
+w w w w w w w w w w w w w w w w w w w w w w w w w w w w w
+"""
+
+FIELD2 = """
 w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w
 w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
 w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
@@ -22,19 +47,95 @@ w _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ w
 w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w
 """
 
-class Tournament1(run.Scenario):
+class Tournament1(scenarios.Scenario):
+    REPEATS   = 1000
     GENERATOR = None
-    FIELD     = core.Field.from_string(FIELD)
-    SETTINGS  = core.Settings(think_time=0.0625,
-                              ammo_amount=1,
+    FIELD     = core.Field.from_string(FIELD1)
+    SETTINGS  = core.Settings(max_steps=300,
+                              max_score=100,
                               spawn_time=10,
+                              ammo_amount=1,  
                               ammo_rate=9,
-                              max_see=70,
+                              max_range=60,
+                              max_see=80,
                               max_turn=math.pi/4,
-                              max_score=100)
+                              think_time=0.06,)
+
+class Tournament2(scenarios.Scenario):
+    REPEATS   = 100
+    GENERATOR = None
+    FIELD     = core.Field.from_string(FIELD2)
+    SETTINGS  = core.Settings(max_steps=20,
+                              max_score=100,
+                              spawn_time=11,
+                              ammo_amount=1,  
+                              ammo_rate=9,
+                              max_range=60,
+                              max_see=80,
+                              max_turn=math.pi/4,
+                              think_time=0.06,
+                              max_speed=40, # FIXED
+                              capture_mode=core.CAPTURE_MODE_MAJORITY)
 
 
-#Tournament1.one_on_one(red="../src/agent_test.py", blue="../src/agent_hard_coded.py", output_folder='_tmp')
-#Tournament1.test(red="../src/agent_hard_coded_v3.py", blue="../src/agent_hard_coded_v2.py")
-#Tournament1.test(red="../src/agent_test.py", blue="../src/agent_test.py")
-Tournament1.test(red="../src/agent_bfdb.py", blue="../src/agent_test.py")
+# This is the code that is used for running a tournament, in order to run a 
+# tournament in parallel, agents are temporarily copied, and blob data is not
+# preserved. Please refer to "Running a Game" in the documentation for how
+# to set up your own learning environment.
+
+
+#~ if __name__ == '__main__':
+    #~ if len(sys.argv) == 1: # no CLI arguments
+        #~ now = datetime.datetime.now()
+        #~ folder = os.path.join('tournaments', now.strftime("%Y%m%d-%H%M"))       
+        #~ Tournament2.tournament(agents=["../src/agent_test_avb.py","domination/agent.py"], output_folder=folder, rendered=False, verbose=True)
+        #~ #Tournament2.test(red="../src/agent_test_avb.py",blue="domination/agent.py")
+    #~ else:
+        #~ now = datetime.datetime.now()
+        #~ folder = os.path.join('tournaments', now.strftime("%Y%m%d-%H%M"))
+        #~ Tournament2.tournament(agents=sys.argv[1:], output_folder=folder, rendered=False)
+
+
+
+# Make it a short game
+SETTINGS  = core.Settings(max_steps=300,
+                              max_score=100,
+                              spawn_time=11,
+                              ammo_amount=1,  
+                              ammo_rate=9,
+                              max_range=60,
+                              max_see=80,
+                              max_turn=math.pi/4,
+                              think_time=0.06,
+                              max_speed=40, # FIXED
+                              capture_mode=core.CAPTURE_MODE_MAJORITY)
+                              
+
+#~try:
+    #~os.remove('../src/agent_test_avb2_blob')        
+#~except OSError:
+    #~pass
+#~print "make new pickle"
+#~pickle.dump([None]*5, open('../src/agent_test_avb2_blob', 'wb'))    
+        
+
+
+# Initialize a game
+for i in range(0,100):
+    #try:
+    #    blobFile = open('../src/agent_test_avb2_blob','rb')
+    #except IOError:    
+            
+    try:
+        blobFileRed = open('../src/agent_bfdb_blob','rb')
+    except:
+        blobFileRed = None
+        
+    try:
+        blobFileBlue = open('../src/agent_bfdb_blob','rb')
+    except:    
+        blobFileBlue = None
+    
+    game = core.Game(red='../src/agent_bfdb.py',blue='../src/agent_bfdb.py', record=False, rendered=False, settings=SETTINGS, red_init={'blob': blobFileRed}, blue_init={'blob': blobFileBlue}, field=core.Field.from_string(FIELD2))
+    game.run()
+   

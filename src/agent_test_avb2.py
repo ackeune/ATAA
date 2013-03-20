@@ -23,18 +23,20 @@ class Agent(object):
     enemyLocs = [None, None, None]
     distance = [(1000,1000,1000), (1000,1000,1000)]
     
-    ammo1loc = (184, 168)
-    ammo2loc = (312, 104)
-    ammoloc = [ammo1loc, ammo2loc]    
-    cps1loc = (232, 56)
-    cps2loc = (264, 216)
+    tilesize = 16 #based on value in Settings
+    
+    cps1loc = (14.5*tilesize, 3.5*tilesize)
+    cps2loc = (16.5*tilesize, 13.5*tilesize)
+    ammo1loc = (11.5*tilesize, 10.5*tilesize)
+    ammo2loc = (19.5*tilesize, 6.5*tilesize)
+    ammoloc = [ammo1loc, ammo2loc]        
     cpsloc = [cps1loc, cps2loc]
     
     epsilon = 0.9
     gamma = 0.9
     gradientLearningRate = 0.05
      
-    tilesize = 16 #based on value in Settings
+    
     
     # state  = wie ammo heeft; locaties cps + wie ze heeft; ammospawn1, ammospawn2, allyLocs; enemyLocs (als ie ze ziet)
     state = [ammo, ((216, 56,-1),(248, 216, -1)), (True, True), allyLocs, enemyLocs]    
@@ -95,12 +97,14 @@ class Agent(object):
 
     #blobdict = [None]*numActions
 
-    NAME = "Berend Botje"
+    NAME = "False Dmitriy I"
     
-    printStuff = False
+    printStuff = True
+    
+    onServer = False
     
     def __init__(self, id, team, settings=None, field_rects=None, field_grid=None, nav_mesh=None, blob=None, tilesize=None, **kwargs):
-        """ Each agent is initialized at the beginning of each game.
+        """ Each agent is iniftialized at the beginning of each game.
             The first agent (id==0) can use this to set up global variables.
             Note that the properties pertaining to the game field might not be
             given for each game.
@@ -311,7 +315,7 @@ class Agent(object):
         # calculate this state's features
         self.calcFeatures()
         
-        self.writeFeaturesToFile()
+        #self.writeFeaturesToFile()
         
         #~print "Agent.laststate: "
         #~print Agent.lastState
@@ -779,7 +783,7 @@ class Agent(object):
             
             #Agent.blobdict[actionNumber] = Agent.parameterVectors[actionNumber]
         
-            self.writeParametersToFile();
+            #self.writeParametersToFile();
             
             
             
@@ -833,7 +837,7 @@ class Agent(object):
                 print "new fv: "
                 print self.featureVector
         
-            self.lastFeatureVector = copy.deepcopy(self.featureVector)
+            
             
             if(Agent.printStuff):
                 sys.stdout.write('========= Agents ' + str(self.id) + ' reward: ' + str(reward))
@@ -841,6 +845,7 @@ class Agent(object):
             temporalDifferenceValue = reward + Agent.gamma * value - self.oldStateActionValue            
             self.oldStateActionValue = value            
             self.updateParameters(self.oldActionNumber, temporalDifferenceValue)
+            self.lastFeatureVector = copy.deepcopy(self.featureVector)
             newAction = True
         
         elif(self.deadReached()):
@@ -867,7 +872,7 @@ class Agent(object):
                 print "new fv: "
                 print self.featureVector
         
-            self.lastFeatureVector = copy.deepcopy(self.featureVector)
+            
             
             if(Agent.printStuff):
                 sys.stdout.write('========= Agents ' + str(self.id) + ' reward: ' + str(reward))
@@ -875,6 +880,7 @@ class Agent(object):
             temporalDifferenceValue = reward + Agent.gamma * value - self.oldStateActionValue            
             self.oldStateActionValue = value            
             self.updateParameters(self.oldActionNumber, temporalDifferenceValue)
+            self.lastFeatureVector = copy.deepcopy(self.featureVector)
             newAction = True
             
             
@@ -1042,8 +1048,10 @@ class Agent(object):
             interrupt (CTRL+C) by the user. Use it to
             store any learned variables and write logs/reports.
         """
-        pickle.dump(Agent.parameterVectors, open('../src/agent_test_avb2_blob', 'wb'))
-
+        if(not(Agent.onServer)):
+            pickle.dump(Agent.parameterVectors, open('../src/agent_test_avb2_blob', 'wb'))
+        pass
+        
     #############################
     ###### hardcoded stuff
     def plan(self, spawnammo):
