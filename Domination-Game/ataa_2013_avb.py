@@ -127,15 +127,17 @@ for i in range(0,1):
     #except IOError:    
             
     try:
-        blobFileRed = open('../src/agent_test_avb2_blob','rb')
+        blobFileRed = open('../src/agent_test_avb_bfdb_blob','rb')
     except:
         blobFileRed = None
         
-    try:
-        blobFileBlue = open('../src/agent_bfdb_blob','rb')
-    except:
-        blobFileBlue = None
-    game = core.Game(red='../src/agent_test_avb2.py',blue='../src/agent_bfdb.py', record=False, rendered=True, settings=SETTINGS, red_init={'blob': blobFileRed}, blue_init={'blob': blobFileBlue}, field=core.Field.from_string(FIELD2))
+    #~try:
+        #~blobFileBlue = open('../src/agent_bfdb_blob','rb')
+    #~except:
+    
+    blobFileBlue = None
+    
+    game = core.Game(red='../src/agent_test_avb_bfdb.py',blue='domination/agent.py', record=False, rendered=True, settings=SETTINGS, red_init={'blob': blobFileRed}, blue_init={'blob': blobFileBlue}, field=core.Field.from_string(FIELD2))
     game.run()
    
 
